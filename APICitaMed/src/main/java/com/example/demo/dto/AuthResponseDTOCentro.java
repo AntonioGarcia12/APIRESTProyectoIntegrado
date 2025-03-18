@@ -1,26 +1,16 @@
-package com.example.demo.entity;
+package com.example.demo.dto;
 
-import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotNull;
+public class AuthResponseDTOCentro {
 
-@Entity
-public class CentroDeSalud {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
 	private Long id;
 	
-	@NotNull
+	
 	private String nombre;
-	@NotNull
+	
 	private String direccion;
-	@NotNull
+	
 	private String telefono;
 	
 	private String imagen;
@@ -28,23 +18,20 @@ public class CentroDeSalud {
 	private double latitud;
 	private double longitud;
 	
-	@OneToMany(mappedBy = "centroDeSalud")
-	private List<Usuario> usuarios;
-	
-	public CentroDeSalud() {
+	public AuthResponseDTOCentro() {
 		super();
 	}
 
-	public CentroDeSalud(Long id, @NotNull String nombre, @NotNull String direccion, @NotNull String telefono,
-			double latitud, double longitud,String imagen) {
+	public AuthResponseDTOCentro(Long id, String nombre, String direccion, String telefono, String imagen,
+			double latitud, double longitud) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.direccion = direccion;
 		this.telefono = telefono;
+		this.imagen = imagen;
 		this.latitud = latitud;
 		this.longitud = longitud;
-		this.imagen=imagen;
 	}
 
 	public Long getId() {
@@ -102,14 +89,7 @@ public class CentroDeSalud {
 	public void setLongitud(double longitud) {
 		this.longitud = longitud;
 	}
-
-	public List<Usuario> getUsuarios() {
-		return usuarios;
-	}
-
-	public void setUsuarios(List<Usuario> usuarios) {
-		this.usuarios = usuarios;
-	}
+	
 	
 	
 }
