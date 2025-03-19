@@ -1,6 +1,8 @@
 package com.example.demo.repository;
 
 import java.io.Serializable;
+import java.util.List;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +15,5 @@ public interface MedicoRepository extends JpaRepository<Medico, Serializable>{
 
 	Medico findByEmail(String email);
 	boolean existsByEmail(String email);
+	List<Medico> findByEspecialidad(String especialidad);
 }

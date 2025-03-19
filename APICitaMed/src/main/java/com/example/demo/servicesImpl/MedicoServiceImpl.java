@@ -101,4 +101,10 @@ public class MedicoServiceImpl implements MedicoService {
 		return medicoRepository.findById(id).orElse(null);
 	}
 
+	@Override
+	public List<Medico> buscarPorEspecialidad(String especialidad) {
+		
+		return medicoRepository.findByEspecialidad(especialidad);
+	}
+
 }

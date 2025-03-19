@@ -14,4 +14,5 @@ public interface MedicoService {
 	boolean existeEmail(String email);
 	Medico buscarPorEmail(String email);
 	Medico buscarPorId(Long id);
+	List<Medico>buscarPorEspecialidad(String especialidad);
 }
