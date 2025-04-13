@@ -2,6 +2,9 @@ package com.example.demo.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,107 +15,109 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@JsonInclude(Include.NON_NULL)
 public class Cita {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    
-    @ManyToOne
-    @JoinColumn(name = "id_medico", nullable = false)
-    private Medico medico;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    
-    @ManyToOne
-    @JoinColumn(name = "id_paciente", nullable = false)
-    private Usuario paciente;
-    
-    
-    @ManyToOne
-    @JoinColumn(name = "id_centro", nullable = false)
-    private CentroDeSalud centroDeSalud;
-    
-    @NotNull
-    private LocalDateTime fecha;
-    
-    @NotNull
-    private String estado;
-    
-    @Column(length = 500)
-    private String descripcion;
+	@ManyToOne
+	@JoinColumn(name = "id_medico", nullable = false)
+	private Medico medico;
 
-    
+	@ManyToOne
+	@JoinColumn(name = "id_paciente", nullable = false)
+	private Usuario paciente;
 
-    public Cita() {
-        super();
-    }
+	@ManyToOne
+	@JoinColumn(name = "id_centro", nullable = false)
+	private CentroDeSalud centroDeSalud;
 
-    public Cita(Long id, Medico medico, Usuario paciente, CentroDeSalud centroDeSalud, LocalDateTime fecha,
-            String estado, String descripcion) {
-        super();
-        this.id = id;
-        this.medico = medico;
-        this.paciente = paciente;
-        this.centroDeSalud = centroDeSalud;
-        this.fecha = fecha;
-        this.estado = estado;
-        this.descripcion = descripcion;
-    }
+	@NotNull
+	private LocalDateTime fecha;
 
-    public Long getId() {
-        return id;
-    }
+	@NotNull
+	private String estado;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	@Column(length = 500)
+	private String descripcion;
 
-    public Medico getMedico() {
-        return medico;
-    }
+	public Cita() {
+		super();
+	}
 
-    public void setMedico(Medico medico) {
-        this.medico = medico;
-    }
+	public Cita(Long id, Medico medico, Usuario paciente, CentroDeSalud centroDeSalud, LocalDateTime fecha,
+			String estado, String descripcion) {
+		super();
+		this.id = id;
+		this.medico = medico;
+		this.paciente = paciente;
+		this.centroDeSalud = centroDeSalud;
+		this.fecha = fecha;
+		this.estado = estado;
+		this.descripcion = descripcion;
+	}
 
-    public Usuario getPaciente() {
-        return paciente;
-    }
+	public Cita(LocalDateTime fecha, String descripcion) {
+		super();
+		this.fecha = fecha;
+		this.descripcion = descripcion;
+	}
 
-    public void setPaciente(Usuario paciente) {
-        this.paciente = paciente;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public CentroDeSalud getCentroDeSalud() {
-        return centroDeSalud;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setCentroDeSalud(CentroDeSalud centroDeSalud) {
-        this.centroDeSalud = centroDeSalud;
-    }
+	public Medico getMedico() {
+		return medico;
+	}
 
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
+	public void setMedico(Medico medico) {
+		this.medico = medico;
+	}
 
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
+	public Usuario getPaciente() {
+		return paciente;
+	}
 
-    public String getEstado() {
-        return estado;
-    }
+	public void setPaciente(Usuario paciente) {
+		this.paciente = paciente;
+	}
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+	public CentroDeSalud getCentroDeSalud() {
+		return centroDeSalud;
+	}
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+	public void setCentroDeSalud(CentroDeSalud centroDeSalud) {
+		this.centroDeSalud = centroDeSalud;
+	}
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+	public LocalDateTime getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(LocalDateTime fecha) {
+		this.fecha = fecha;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 }

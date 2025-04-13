@@ -12,25 +12,21 @@ import com.example.demo.entity.Usuario;
 import com.example.demo.repository.UsuarioRepository;
 
 @Service("usuarioDetailsService")
-public class UsuarioDetailsServiceImpl implements UserDetailsService{
+public class UsuarioDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	@Qualifier("UsuarioRepository")
-    private UsuarioRepository usuarioRepository;
+	private UsuarioRepository usuarioRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByEmail(email);
-        if (usuario == null)
-            throw new UsernameNotFoundException("Usuario no encontrado");
-        
-        boolean habilitado = (usuario.getActivo() == 1); 
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Usuario usuario = usuarioRepository.findByEmail(email);
+		if (usuario == null)
+			throw new UsernameNotFoundException("Usuario no encontrado");
 
-        return User.builder()
-                .username(usuario.getEmail())
-                .password(usuario.getContrasenya())
-                .disabled(!habilitado)
-                .roles(usuario.getRol())
-                .build();
-    }
+		boolean habilitado = (usuario.getActivo() == 1);
+
+		return User.builder().username(usuario.getEmail()).password(usuario.getContrasenya()).disabled(!habilitado)
+				.roles(usuario.getRol()).build();
+	}
 
 }

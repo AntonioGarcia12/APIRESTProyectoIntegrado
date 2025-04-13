@@ -26,11 +26,11 @@ public class UsuarioController {
 	@Autowired
 	@Qualifier("usuarioService")
 	private UsuarioService usuarioService;
-	
+
 	@Autowired
 	@Qualifier("JwtService")
 	private JWTServiceImpl jwtService;
-	
+
 	@Autowired
 	@Qualifier("FileUploadService")
 	private FileUploadService fileUploadService;
@@ -59,20 +59,10 @@ public class UsuarioController {
 
 		String token = jwtService.generateToken(usuario.getEmail());
 
-		AuthResponseDTO response = new AuthResponseDTO(
-			    usuario.getId(),
-			    usuario.getNombre(),
-			    usuario.getApellidos(),
-			    usuario.getFechaNacimiento(),
-			    usuario.getActivo(),
-			    usuario.getTelefono(),
-			    usuario.getEmail(),
-			    usuario.getDireccion(),
-			    null,
-			    usuario.getImagen(), 
-			    token,               
-			    usuario.getRol()     
-			);
+		AuthResponseDTO response = new AuthResponseDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
+				usuario.getDni(), usuario.getNumeroSeguridadSocial(), usuario.getFechaNacimiento(), usuario.getActivo(),
+				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), null, usuario.getImagen(), token,
+				usuario.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Login existoso");
@@ -81,46 +71,45 @@ public class UsuarioController {
 	}
 
 	@PostMapping("/registrarPaciente")
-    public ResponseEntity<?> registrarPaciente(Usuario usuario,@RequestParam MultipartFile archivo) {
+	public ResponseEntity<?> registrarPaciente(Usuario usuario, @RequestParam MultipartFile archivo) {
 
-        Map<String, Object> respuesta = new HashMap<>();
+		Map<String, Object> respuesta = new HashMap<>();
 
-        if (usuarioService.existeEmail(usuario.getEmail())) {
-            respuesta.put("mensaje", "El email ya existe");
-            return ResponseEntity.badRequest().body(respuesta);
-        }
+		if (usuarioService.existeEmail(usuario.getEmail())) {
+			respuesta.put("mensaje", "El email ya existe");
+			return ResponseEntity.badRequest().body(respuesta);
+		}
 
-        
-        usuarioService.registrarPaciente(usuario);
+		if (usuarioService.existeDni(usuario.getDni())) {
+			respuesta.put("mensaje", "El dni ya existe");
+			return ResponseEntity.badRequest().body(respuesta);
+		}
 
-        
-        if (archivo != null && !archivo.isEmpty()) {
-            try {
-                usuario = fileUploadService.upload(usuario.getId(), archivo);
-            } catch (Exception e) {
-                respuesta.put("mensaje", "Error al subir la imagen: " + e.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
-            }
-        }
+		if (usuarioService.existeNUSS(usuario.getNumeroSeguridadSocial())) {
+			respuesta.put("mensaje", "El número de la seguridad social ya existe");
+			return ResponseEntity.badRequest().body(respuesta);
+		}
 
-        AuthResponseDTO response = new AuthResponseDTO(
-                usuario.getId(),
-                usuario.getNombre(),
-                usuario.getApellidos(),
-                usuario.getFechaNacimiento(),
-                usuario.getActivo(),
-                usuario.getTelefono(),
-                usuario.getEmail(),
-                usuario.getDireccion(),
-                usuario.getImagen(),
-                usuario.getRol()
-        );
+		usuarioService.registrarPaciente(usuario);
 
-        respuesta.put("data", response);
-        respuesta.put("mensaje", "Registro exitoso");
+		if (archivo != null && !archivo.isEmpty()) {
+			try {
+				usuario = fileUploadService.upload(usuario.getId(), archivo);
+			} catch (Exception e) {
+				respuesta.put("mensaje", "Error al subir la imagen: " + e.getMessage());
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
+			}
+		}
 
-        return ResponseEntity.ok(respuesta);
-    }
-	
-	
+		AuthResponseDTO response = new AuthResponseDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
+				usuario.getDni(), usuario.getNumeroSeguridadSocial(), usuario.getFechaNacimiento(), usuario.getActivo(),
+				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), usuario.getImagen(),
+				usuario.getRol());
+
+		respuesta.put("data", response);
+		respuesta.put("mensaje", "Registro exitoso");
+
+		return ResponseEntity.ok(respuesta);
+	}
+
 }

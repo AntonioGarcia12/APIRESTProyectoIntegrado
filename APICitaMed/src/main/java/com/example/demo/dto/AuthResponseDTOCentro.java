@@ -1,23 +1,20 @@
 package com.example.demo.dto;
 
-
 public class AuthResponseDTOCentro {
 
-	
 	private Long id;
-	
-	
+
 	private String nombre;
-	
+
 	private String direccion;
-	
+
 	private String telefono;
-	
+
 	private String imagen;
-	
+
 	private double latitud;
 	private double longitud;
-	
+
 	public AuthResponseDTOCentro() {
 		super();
 	}
@@ -89,7 +86,5 @@ public class AuthResponseDTOCentro {
 	public void setLongitud(double longitud) {
 		this.longitud = longitud;
 	}
-	
-	
-	
+
 }

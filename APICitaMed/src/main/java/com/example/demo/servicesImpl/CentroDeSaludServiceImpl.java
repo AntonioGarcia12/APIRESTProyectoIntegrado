@@ -30,32 +30,27 @@ public class CentroDeSaludServiceImpl implements CentroDeSaludService {
 	}
 
 	@Override
-	public void editarCentroDeSalud(CentroDeSalud centroDeSalud) {
+	public CentroDeSalud editarCentroDeSalud(CentroDeSalud centroDeSalud) {
 
 		CentroDeSalud centroExistente = centroDeSaludRepository.findById(centroDeSalud.getId()).orElseThrow(
 				() -> new RuntimeException("Centro de salud no encontrado con id: " + centroDeSalud.getId()));
 
-		if (centroDeSalud.getNombre() != null && !centroDeSalud.getNombre().trim().isEmpty()) {
+		if (centroDeSalud.getNombre() != null && !centroDeSalud.getNombre().trim().isEmpty())
 			centroExistente.setNombre(centroDeSalud.getNombre());
-		}
 
-		if (centroDeSalud.getDireccion() != null && !centroDeSalud.getDireccion().trim().isEmpty()) {
+		if (centroDeSalud.getDireccion() != null && !centroDeSalud.getDireccion().trim().isEmpty())
 			centroExistente.setDireccion(centroDeSalud.getDireccion());
-		}
 
-		if (centroDeSalud.getTelefono() != null && !centroDeSalud.getTelefono().trim().isEmpty()) {
+		if (centroDeSalud.getTelefono() != null && !centroDeSalud.getTelefono().trim().isEmpty())
 			centroExistente.setTelefono(centroDeSalud.getTelefono());
-		}
 
-		if (centroDeSalud.getLatitud() != 0) {
+		if (centroDeSalud.getLatitud() != 0)
 			centroExistente.setLatitud(centroDeSalud.getLatitud());
-		}
 
-		if (centroDeSalud.getLongitud() != 0) {
+		if (centroDeSalud.getLongitud() != 0)
 			centroExistente.setLongitud(centroDeSalud.getLongitud());
-		}
 
-		centroDeSaludRepository.save(centroExistente);
+		return centroDeSaludRepository.save(centroExistente);
 	}
 
 	@Override

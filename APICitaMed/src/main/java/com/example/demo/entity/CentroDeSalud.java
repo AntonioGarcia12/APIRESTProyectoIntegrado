@@ -2,6 +2,10 @@ package com.example.demo.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,33 +14,35 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@JsonInclude(Include.NON_NULL)
 public class CentroDeSalud {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull
 	private String nombre;
 	@NotNull
 	private String direccion;
 	@NotNull
 	private String telefono;
-	
+
 	private String imagen;
-	
+
 	private double latitud;
 	private double longitud;
-	
+
 	@OneToMany(mappedBy = "centroDeSalud")
-	private List<Usuario> usuarios;
-	
+	@JsonManagedReference
+	private List<Medico> medicos;
+
 	public CentroDeSalud() {
 		super();
 	}
 
-	public CentroDeSalud(Long id, @NotNull String nombre, @NotNull String direccion, @NotNull String telefono,
-			double latitud, double longitud,String imagen) {
+	public CentroDeSalud(Long id, String nombre, String direccion, String telefono, double latitud, double longitud,
+			String imagen) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -44,7 +50,7 @@ public class CentroDeSalud {
 		this.telefono = telefono;
 		this.latitud = latitud;
 		this.longitud = longitud;
-		this.imagen=imagen;
+		this.imagen = imagen;
 	}
 
 	public Long getId() {
@@ -103,13 +109,12 @@ public class CentroDeSalud {
 		this.longitud = longitud;
 	}
 
-	public List<Usuario> getUsuarios() {
-		return usuarios;
+	public List<Medico> getMedicos() {
+		return medicos;
 	}
 
-	public void setUsuarios(List<Usuario> usuarios) {
-		this.usuarios = usuarios;
+	public void setMedicos(List<Medico> medicos) {
+		this.medicos = medicos;
 	}
-	
-	
+
 }

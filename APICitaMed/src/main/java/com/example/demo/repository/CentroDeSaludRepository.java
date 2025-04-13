@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.CentroDeSalud;
 
 @Repository("CentroDeSaludRepository")
-public interface CentroDeSaludRepository extends JpaRepository<CentroDeSalud, Serializable>{
+public interface CentroDeSaludRepository extends JpaRepository<CentroDeSalud, Serializable> {
 
 	boolean existsByNombre(String nombre);
-	
+
 }

@@ -2,17 +2,29 @@ package com.example.demo.entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Medico extends Usuario{
+public class Medico extends Usuario {
 
 	private String especialidad;
 
-	public Medico(Long id, String nombre, String apellidos, LocalDate fechaNacimiento, String email, String contrasenya,
-			String telefono, String direccion, String rol, String imagen, String especialidad) {
-		super(id, nombre, apellidos, fechaNacimiento, email, contrasenya, telefono, direccion, rol, imagen);
+	@ManyToOne
+	@JsonBackReference
+	@JoinColumn(name = "id_centro", nullable = false)
+	private CentroDeSalud centroDeSalud;
+
+	public Medico(Long id, String nombre, String apellidos, String dni, String numeroSeguridadSocial,
+			LocalDate fechaNacimiento, String email, String contrasenya, int activo, String telefono, String direccion,
+			String imagen, String rol, String especialidad, CentroDeSalud centroDeSalud) {
+		super(id, nombre, apellidos, dni, numeroSeguridadSocial, fechaNacimiento, email, contrasenya, activo, telefono,
+				direccion, imagen, rol);
 		this.especialidad = especialidad;
+		this.centroDeSalud = centroDeSalud;
 	}
 
 	public Medico() {
@@ -26,6 +38,13 @@ public class Medico extends Usuario{
 	public void setEspecialidad(String especialidad) {
 		this.especialidad = especialidad;
 	}
-	
-	
+
+	public CentroDeSalud getCentroDeSalud() {
+		return centroDeSalud;
+	}
+
+	public void setCentroDeSalud(CentroDeSalud centroDeSalud) {
+		this.centroDeSalud = centroDeSalud;
+	}
+
 }

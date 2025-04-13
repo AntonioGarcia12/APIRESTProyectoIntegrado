@@ -8,7 +8,9 @@ import com.example.demo.entity.Usuario;
 
 public interface FileUploadService {
 
-	Usuario upload(Long id,MultipartFile file);
-	Medico uploadMedico(Long id,MultipartFile file);
-	CentroDeSalud uploadCentro(Long id,MultipartFile file);
+	Usuario upload(Long id, MultipartFile file);
+
+	Medico uploadMedico(Long id, MultipartFile file);
+
+	CentroDeSalud uploadCentro(Long id, MultipartFile file);
 }

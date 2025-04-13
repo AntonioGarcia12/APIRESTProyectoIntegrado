@@ -1,7 +1,6 @@
 package com.example.demo.servicesImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -51,33 +50,26 @@ public class MedicoServiceImpl implements MedicoService {
 		Medico medicoExistente = medicoRepository.findById(medico.getId())
 				.orElseThrow(() -> new RuntimeException("No se encontró el médico con id: " + medico.getId()));
 
-		if (medico.getNombre() != null && !medico.getNombre().trim().isEmpty()) {
+		if (medico.getNombre() != null && !medico.getNombre().trim().isEmpty())
 			medicoExistente.setNombre(medico.getNombre());
-		}
 
-		if (medico.getApellidos() != null && !medico.getApellidos().trim().isEmpty()) {
+		if (medico.getApellidos() != null && !medico.getApellidos().trim().isEmpty())
 			medicoExistente.setApellidos(medico.getApellidos());
-		}
 
-		if (medico.getFechaNacimiento() != null) {
+		if (medico.getFechaNacimiento() != null)
 			medicoExistente.setFechaNacimiento(medico.getFechaNacimiento());
-		}
 
-		if (medico.getTelefono() != null && !medico.getTelefono().trim().isEmpty()) {
+		if (medico.getTelefono() != null && !medico.getTelefono().trim().isEmpty())
 			medicoExistente.setTelefono(medico.getTelefono());
-		}
 
-		if (medico.getDireccion() != null && !medico.getDireccion().trim().isEmpty()) {
+		if (medico.getDireccion() != null && !medico.getDireccion().trim().isEmpty())
 			medicoExistente.setDireccion(medico.getDireccion());
-		}
 
-		if (medico.getEspecialidad() != null && !medico.getEspecialidad().trim().isEmpty()) {
+		if (medico.getEspecialidad() != null && !medico.getEspecialidad().trim().isEmpty())
 			medicoExistente.setEspecialidad(medico.getEspecialidad());
-		}
 
-		if (medico.getContrasenya() != null && !medico.getContrasenya().trim().isEmpty()) {
+		if (medico.getContrasenya() != null && !medico.getContrasenya().trim().isEmpty())
 			medicoExistente.setContrasenya(passwordEncoder.encode(medico.getContrasenya()));
-		}
 
 		medicoRepository.save(medicoExistente);
 
@@ -103,7 +95,7 @@ public class MedicoServiceImpl implements MedicoService {
 
 	@Override
 	public List<Medico> buscarPorEspecialidad(String especialidad) {
-		
+
 		return medicoRepository.findByEspecialidad(especialidad);
 	}
 
