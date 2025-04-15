@@ -1,5 +1,7 @@
 package com.example.demo.servicesImpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -63,6 +65,12 @@ public class CentroDeSaludServiceImpl implements CentroDeSaludService {
 	public boolean existeCentro(String nombre) {
 
 		return centroDeSaludRepository.existsByNombre(nombre);
+	}
+
+	@Override
+	public List<CentroDeSalud> listarCentroDeSaluds() {
+
+		return centroDeSaludRepository.findAll();
 	}
 
 }

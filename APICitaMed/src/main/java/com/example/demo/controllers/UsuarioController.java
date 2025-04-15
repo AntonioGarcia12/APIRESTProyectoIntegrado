@@ -61,8 +61,8 @@ public class UsuarioController {
 
 		AuthResponseDTO response = new AuthResponseDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
 				usuario.getDni(), usuario.getNumeroSeguridadSocial(), usuario.getFechaNacimiento(), usuario.getActivo(),
-				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), null, usuario.getImagen(), token,
-				usuario.getRol());
+				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), usuario.getSexo(), null,
+				usuario.getImagen(), token, usuario.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Login existoso");
@@ -103,8 +103,8 @@ public class UsuarioController {
 
 		AuthResponseDTO response = new AuthResponseDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
 				usuario.getDni(), usuario.getNumeroSeguridadSocial(), usuario.getFechaNacimiento(), usuario.getActivo(),
-				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), usuario.getImagen(),
-				usuario.getRol());
+				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), usuario.getSexo(), null,
+				usuario.getImagen(), null, usuario.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Registro exitoso");

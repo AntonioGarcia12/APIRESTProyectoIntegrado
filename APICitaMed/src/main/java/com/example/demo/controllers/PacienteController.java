@@ -91,11 +91,47 @@ public class PacienteController {
 
 		AuthResponseDTO response = new AuthResponseDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
 				usuario.getDni(), usuario.getNumeroSeguridadSocial(), usuario.getFechaNacimiento(), usuario.getActivo(),
-				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), null, usuario.getImagen(), null,
-				usuario.getRol());
+				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), usuario.getSexo(), null,
+				usuario.getImagen(), null, usuario.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Paciente actualizado correctamente");
+		return ResponseEntity.ok(respuesta);
+	}
+
+	@GetMapping("/listarUnPaciente/{id}")
+	public ResponseEntity<?> listarUnPaciente(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+		Map<String, Object> respuesta = new HashMap<>();
+
+		if (userDetails == null) {
+			respuesta.put("mensaje", "No hay usuario autenticado o no se ha proporcionado un token válido.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
+
+		Usuario pacienteAutenticado = usuarioService.buscarPorEmail(userDetails.getUsername());
+		if (pacienteAutenticado == null) {
+			respuesta.put("mensaje", "Paciente no encontrado en la base de datos.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
+
+		if (!pacienteAutenticado.getId().equals(id)) {
+			respuesta.put("mensaje", "No tiene permiso para ver a otro paciente.");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
+		}
+
+		Usuario paciente = usuarioService.buscarPorId(id);
+		if (paciente == null) {
+			respuesta.put("mensaje", "Paciente no encontrado.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
+
+		AuthResponseDTO response = new AuthResponseDTO(paciente.getId(), paciente.getNombre(), paciente.getApellidos(),
+				paciente.getDni(), paciente.getNumeroSeguridadSocial(), paciente.getFechaNacimiento(),
+				paciente.getActivo(), paciente.getTelefono(), paciente.getEmail(), paciente.getDireccion(),
+				paciente.getSexo(), null, paciente.getImagen(), null, paciente.getRol());
+
+		respuesta.put("data", response);
+		respuesta.put("mensaje", "Paciente obtenido correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
 

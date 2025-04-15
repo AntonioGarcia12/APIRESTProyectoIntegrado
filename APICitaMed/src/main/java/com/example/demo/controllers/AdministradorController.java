@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +79,8 @@ public class AdministradorController {
 
 		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
 				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(), medico.getActivo(),
-				medico.getTelefono(), medico.getEmail(), medico.getDireccion(), medico.getEspecialidad(),
-				medico.getImagen(), null, medico.getRol());
+				medico.getTelefono(), medico.getEmail(), medico.getDireccion(), medico.getSexo(),
+				medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Registro exitoso");
@@ -121,8 +122,8 @@ public class AdministradorController {
 
 		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
 				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(), medico.getActivo(),
-				medico.getTelefono(), medico.getEmail(), medico.getDireccion(), medico.getEspecialidad(),
-				medico.getImagen(), null, medico.getRol());
+				medico.getTelefono(), medico.getEmail(), medico.getDireccion(), medico.getSexo(),
+				medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Médico actualizado correctamente");
@@ -240,6 +241,40 @@ public class AdministradorController {
 
 		return ResponseEntity.ok(respuesta);
 
+	}
+
+	@GetMapping("/listaMedicos")
+	public ResponseEntity<?> listadoDeMedicos() {
+		Map<String, Object> respuesta = new HashMap<>();
+
+		List<Medico> medicos = medicoService.listarMedicos();
+
+		if (medicos.isEmpty()) {
+			respuesta.put("mensaje", "No hay médicos");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
+
+		respuesta.put("data", medicos);
+		respuesta.put("mensaje", "Listado de médicos");
+
+		return ResponseEntity.ok(respuesta);
+	}
+
+	@GetMapping("/listaCentros")
+	public ResponseEntity<?> listadoDeCentros() {
+		Map<String, Object> respuesta = new HashMap<>();
+
+		List<CentroDeSalud> centros = centroDeSaludService.listarCentroDeSaluds();
+
+		if (centros.isEmpty()) {
+			respuesta.put("mensaje", "No hay centros");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
+
+		respuesta.put("data", centros);
+		respuesta.put("mensaje", "Listado de centros de salud");
+
+		return ResponseEntity.ok(respuesta);
 	}
 
 }

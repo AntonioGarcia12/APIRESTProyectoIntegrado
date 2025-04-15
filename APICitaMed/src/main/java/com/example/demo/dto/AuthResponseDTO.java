@@ -17,6 +17,7 @@ public class AuthResponseDTO {
 	private String telefono;
 	private String email;
 	private String direccion;
+	private String sexo;
 	private String especialidad;
 	private String imagen;
 	private String token;
@@ -27,7 +28,7 @@ public class AuthResponseDTO {
 	}
 
 	public AuthResponseDTO(Long id, String nombre, String apellido, String dni, String numeroSeguridadSocial,
-			LocalDate fechaNacimiento, int activo, String telefono, String email, String direccion, String especialidad,
+			LocalDate fechaNacimiento, int activo, String telefono, String email, String direccion,String sexo, String especialidad,
 			String imagen, String token, String rol) {
 		super();
 		this.id = id;
@@ -40,6 +41,7 @@ public class AuthResponseDTO {
 		this.telefono = telefono;
 		this.email = email;
 		this.direccion = direccion;
+		this.sexo=sexo;
 		this.especialidad = especialidad;
 		this.imagen = imagen;
 		this.token = token;
@@ -192,5 +194,15 @@ public class AuthResponseDTO {
 	public void setNumeroSeguridadSocial(String numeroSeguridadSocial) {
 		this.numeroSeguridadSocial = numeroSeguridadSocial;
 	}
+
+	public String getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+	
+	
 
 }

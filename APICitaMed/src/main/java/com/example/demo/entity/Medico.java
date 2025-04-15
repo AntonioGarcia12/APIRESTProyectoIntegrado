@@ -18,11 +18,13 @@ public class Medico extends Usuario {
 	@JoinColumn(name = "id_centro", nullable = false)
 	private CentroDeSalud centroDeSalud;
 
+	
+
 	public Medico(Long id, String nombre, String apellidos, String dni, String numeroSeguridadSocial,
 			LocalDate fechaNacimiento, String email, String contrasenya, int activo, String telefono, String direccion,
-			String imagen, String rol, String especialidad, CentroDeSalud centroDeSalud) {
+			String sexo, String imagen, String rol, String especialidad, CentroDeSalud centroDeSalud) {
 		super(id, nombre, apellidos, dni, numeroSeguridadSocial, fechaNacimiento, email, contrasenya, activo, telefono,
-				direccion, imagen, rol);
+				direccion, sexo, imagen, rol);
 		this.especialidad = especialidad;
 		this.centroDeSalud = centroDeSalud;
 	}

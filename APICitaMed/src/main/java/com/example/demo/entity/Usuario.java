@@ -45,6 +45,9 @@ public class Usuario {
 
 	@NotNull
 	private String direccion;
+	
+	@NotNull
+	private String sexo;
 
 	private String imagen;
 
@@ -54,9 +57,12 @@ public class Usuario {
 		super();
 	}
 
-	public Usuario(Long id, String nombre, String apellidos, String dni, String numeroSeguridadSocial,
-			LocalDate fechaNacimiento, String email, String contrasenya, int activo, String telefono, String direccion,
-			String imagen, String rol) {
+	
+
+	public Usuario(Long id,String nombre,String apellidos,String dni,
+			 String numeroSeguridadSocial, LocalDate fechaNacimiento,String email,
+			String contrasenya, int activo,String telefono,String direccion,
+			String sexo, String imagen, String rol) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -69,9 +75,25 @@ public class Usuario {
 		this.activo = activo;
 		this.telefono = telefono;
 		this.direccion = direccion;
+		this.sexo = sexo;
 		this.imagen = imagen;
 		this.rol = rol;
 	}
+
+	
+
+
+	public String getSexo() {
+		return sexo;
+	}
+
+
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+
+
 
 	public String getDni() {
 		return dni;
