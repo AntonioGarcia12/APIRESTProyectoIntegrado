@@ -1,8 +1,8 @@
 FROM maven:3.9-eclipse-temurin-23 AS builder
 WORKDIR /app
 
-COPY ApiCitaMed/pom.xml .
-COPY ApiCitaMed/src/ ./src
+COPY pom.xml .
+COPY src/ ./src
 
 RUN mvn clean package -DskipTests
 
