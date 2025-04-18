@@ -9,8 +9,12 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:23-jre-jammy
 WORKDIR /app
 
-COPY --from=build /app/target/APICitaMed-0.0.1-SNAPSHOT.jar app.jar
+
+ARG JAR_FILE=target/APICitaMed-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/${JAR_FILE} app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=${PORT:-8080} -jar /app/app.jar"]
