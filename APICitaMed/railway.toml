@@ -1,0 +1,2 @@
+builder        = "DOCKERFILE"
+dockerfilePath = "Dockerfile" 
