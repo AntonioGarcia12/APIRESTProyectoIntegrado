@@ -1,16 +1,11 @@
-FROM maven:3.9-eclipse-temurin-23 AS builder
+FROM eclipse-temurin:23-jdk-jammy AS build
 WORKDIR /app
+COPY . .
+RUN ./mvnw -DskipTests clean package
 
-COPY pom.xml .
-COPY src/ ./src
 
-RUN mvn clean package -DskipTests
-
-FROM eclipse-temurin:23-jdk
+FROM eclipse-temurin:23-jre-jammy
 WORKDIR /app
-
-COPY --from=builder /app/target/APICitaMed-0.0.1-SNAPSHOT.jar /app/app.jar
-
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-CMD ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java","-jar","/app/app.jar"]
