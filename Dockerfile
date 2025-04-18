@@ -1,4 +1,4 @@
-FROM eclipse-temurin:23-jdk-jammy AS build
+FROM eclipse-temurin:23-jdk AS build
 WORKDIR /app
 COPY . .
 RUN ./mvnw -DskipTests clean package
