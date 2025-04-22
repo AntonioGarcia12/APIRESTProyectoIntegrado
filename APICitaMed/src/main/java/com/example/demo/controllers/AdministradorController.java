@@ -276,5 +276,21 @@ public class AdministradorController {
 
 		return ResponseEntity.ok(respuesta);
 	}
+	
+	@GetMapping("/listarUsuarios")
+	public ResponseEntity<?> listarUsuario(){
+		Map<String, Object> respuesta = new HashMap<>();
+		List<Usuario>usuarios=usuarioService.listarUsuario();
+		
+		if(usuarios.isEmpty()) {
+			respuesta.put("mensaje", "No hay usuarios");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
+		
+		respuesta.put("data", usuarios);
+		respuesta.put("mensaje", "Listado de usuarios");
+		
+		return ResponseEntity.ok(respuesta);
+	}
 
 }

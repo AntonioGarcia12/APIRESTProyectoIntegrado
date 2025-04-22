@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.util.List;
 import com.example.demo.entity.Usuario;
 
 public interface UsuarioService {
@@ -20,4 +21,6 @@ public interface UsuarioService {
 	Usuario buscarPorId(Long id);
 
 	Usuario actulizarEstado(Long id, int activo);
+	
+	List<Usuario>listarUsuario();
 }

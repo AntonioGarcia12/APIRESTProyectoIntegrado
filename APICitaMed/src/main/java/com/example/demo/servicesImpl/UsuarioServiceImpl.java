@@ -1,5 +1,7 @@
 package com.example.demo.servicesImpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -100,6 +102,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public boolean existeNUSS(String NUUS) {
 
 		return usuarioRepository.existsByNumeroSeguridadSocial(NUUS);
+	}
+
+	@Override
+	public List<Usuario> listarUsuario() {
+		
+		return usuarioRepository.findAll().stream().filter(a->a.getRol().equals("PACIENTE")&&a.getRol().equals("PACIENTE")).toList();
 	}
 
 }
