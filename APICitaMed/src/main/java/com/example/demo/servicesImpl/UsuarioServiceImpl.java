@@ -107,7 +107,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public List<Usuario> listarUsuario() {
 		
-		return usuarioRepository.findAll().stream().filter(a->a.getRol().equals("PACIENTE")&&a.getRol().equals("PACIENTE")).toList();
+		return usuarioRepository.findAll().stream().filter(a->a.getRol().equals("PACIENTE")&&a.getRol().equals("MEDICO")).toList();
 	}
 
 }
