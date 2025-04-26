@@ -80,7 +80,7 @@ public class AdministradorController {
 		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
 				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(), medico.getActivo(),
 				medico.getTelefono(), medico.getEmail(), medico.getDireccion(), medico.getSexo(),
-				medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
+				medico.getEspecialidad(), medico.getImagen(), null, medico.getRol(),medico.getCentroDeSalud());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Registro exitoso");

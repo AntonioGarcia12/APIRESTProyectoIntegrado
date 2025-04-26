@@ -14,7 +14,6 @@ public class Medico extends Usuario {
 	private String especialidad;
 
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "id_centro", nullable = false)
 	private CentroDeSalud centroDeSalud;
 
