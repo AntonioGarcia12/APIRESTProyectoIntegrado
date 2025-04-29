@@ -54,7 +54,7 @@ public class AdministradorController {
 	private CitaService citaService;
 
 	@PostMapping("/registrarMedico")
-	public ResponseEntity<?> registrarMedico(Medico medico, @RequestParam MultipartFile archivo,
+	public ResponseEntity<?> registrarMedico(Medico medico, @RequestParam(required=false) MultipartFile archivo,
 			@RequestParam Long centroDeSaludId) {
 
 		Map<String, Object> respuesta = new HashMap<>();
@@ -144,7 +144,7 @@ public class AdministradorController {
 	}
 
 	@PostMapping("/registrarCentro")
-	public ResponseEntity<?> registrarCentro(CentroDeSalud centroDeSalud, @RequestParam MultipartFile archivo) {
+	public ResponseEntity<?> registrarCentro(CentroDeSalud centroDeSalud, @RequestParam(required=false) MultipartFile archivo) {
 
 		Map<String, Object> respuesta = new HashMap<>();
 
