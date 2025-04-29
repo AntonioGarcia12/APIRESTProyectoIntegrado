@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entity.CentroDeSalud;
 import com.example.demo.entity.Medico;
+import com.example.demo.repository.CentroDeSaludRepository;
 import com.example.demo.repository.MedicoRepository;
 import com.example.demo.services.MedicoService;
 
@@ -17,6 +19,10 @@ public class MedicoServiceImpl implements MedicoService {
 	@Autowired
 	@Qualifier("MedicoRepository")
 	private MedicoRepository medicoRepository;
+	
+	@Autowired
+	@Qualifier("CentroDeSaludRepository")
+	private CentroDeSaludRepository centroRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -70,6 +76,13 @@ public class MedicoServiceImpl implements MedicoService {
 
 		if (medico.getContrasenya() != null && !medico.getContrasenya().trim().isEmpty())
 			medicoExistente.setContrasenya(passwordEncoder.encode(medico.getContrasenya()));
+		
+		if (medico.getCentroDeSalud() != null && medico.getCentroDeSalud().getId() != null) {
+	        CentroDeSalud centro = centroRepository.findById(
+	            medico.getCentroDeSalud().getId()
+	        ).orElseThrow(() -> new RuntimeException("Centro no encontrado"));
+	        medicoExistente.setCentroDeSalud(centro);
+	    }
 
 		medicoRepository.save(medicoExistente);
 
