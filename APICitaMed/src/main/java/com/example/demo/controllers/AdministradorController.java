@@ -179,6 +179,10 @@ public class AdministradorController {
 	public ResponseEntity<?> borrarCentro(@PathVariable Long id) {
 
 		Map<String, Object> respuesta = new HashMap<>();
+		
+		if(medicoService.existeMedicoCentroDeSalud(id)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("mensaje", "No se puede eliminar: hay médicos asignados"));
+		}
 
 		if (centroDeSaludService.buscarPorId(id) == null) {
 			respuesta.put("mensaje", "Centro no encontrado");

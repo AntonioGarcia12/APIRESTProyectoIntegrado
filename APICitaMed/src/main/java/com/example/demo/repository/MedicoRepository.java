@@ -16,4 +16,6 @@ public interface MedicoRepository extends JpaRepository<Medico, Serializable> {
 	boolean existsByEmail(String email);
 
 	List<Medico> findByEspecialidad(String especialidad);
+	
+	boolean existsByCentroDeSaludId(Long id);
 }

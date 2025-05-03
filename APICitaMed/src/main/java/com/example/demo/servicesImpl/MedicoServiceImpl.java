@@ -112,4 +112,10 @@ public class MedicoServiceImpl implements MedicoService {
 		return medicoRepository.findByEspecialidad(especialidad);
 	}
 
+	@Override
+	public boolean existeMedicoCentroDeSalud(Long id) {
+		
+		return medicoRepository.existsByCentroDeSaludId(id);
+	}
+
 }

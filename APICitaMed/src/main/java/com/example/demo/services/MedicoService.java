@@ -21,4 +21,6 @@ public interface MedicoService {
 	Medico buscarPorId(Long id);
 
 	List<Medico> buscarPorEspecialidad(String especialidad);
+	
+	boolean existeMedicoCentroDeSalud(Long id);
 }
