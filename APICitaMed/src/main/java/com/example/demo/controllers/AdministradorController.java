@@ -181,7 +181,8 @@ public class AdministradorController {
 		Map<String, Object> respuesta = new HashMap<>();
 		
 		if(medicoService.existeMedicoCentroDeSalud(id)) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("mensaje", "No se puede eliminar: hay médicos asignados"));
+			respuesta.put("mensaje", "No se puede eliminar: hay médicos asignados");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
 		}
 
 		if (centroDeSaludService.buscarPorId(id) == null) {
