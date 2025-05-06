@@ -71,7 +71,7 @@ public class UsuarioController {
 	}
 
 	@PostMapping("/registrarPaciente")
-	public ResponseEntity<?> registrarPaciente(Usuario usuario, @RequestParam MultipartFile archivo) {
+	public ResponseEntity<?> registrarPaciente(Usuario usuario, @RequestParam(required=false) MultipartFile archivo) {
 
 		Map<String, Object> respuesta = new HashMap<>();
 
