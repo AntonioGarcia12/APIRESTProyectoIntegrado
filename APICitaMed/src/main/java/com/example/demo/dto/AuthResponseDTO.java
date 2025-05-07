@@ -6,7 +6,7 @@ import com.example.demo.entity.CentroDeSalud;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@JsonInclude(Include.NON_NULL)
+
 public class AuthResponseDTO {
 
 	private Long id;
