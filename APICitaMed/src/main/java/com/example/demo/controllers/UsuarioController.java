@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.AuthResponseDTO;
+import com.example.demo.entity.Medico;
 import com.example.demo.entity.Usuario;
 import com.example.demo.services.FileUploadService;
 import com.example.demo.services.UsuarioService;
@@ -59,9 +60,14 @@ public class UsuarioController {
 
 		String token = jwtService.generateToken(usuario.getEmail());
 
+		String especialidad = null;
+
+		if (usuario instanceof Medico medico)
+			especialidad = medico.getEspecialidad();
+
 		AuthResponseDTO response = new AuthResponseDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
 				usuario.getDni(), usuario.getNumeroSeguridadSocial(), usuario.getFechaNacimiento(), usuario.getActivo(),
-				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), usuario.getSexo(), null,
+				usuario.getTelefono(), usuario.getEmail(), usuario.getDireccion(), usuario.getSexo(), especialidad,
 				usuario.getImagen(), token, usuario.getRol());
 
 		respuesta.put("data", response);
@@ -71,7 +77,7 @@ public class UsuarioController {
 	}
 
 	@PostMapping("/registrarPaciente")
-	public ResponseEntity<?> registrarPaciente(Usuario usuario, @RequestParam(required=false) MultipartFile archivo) {
+	public ResponseEntity<?> registrarPaciente(Usuario usuario, @RequestParam(required = false) MultipartFile archivo) {
 
 		Map<String, Object> respuesta = new HashMap<>();
 
