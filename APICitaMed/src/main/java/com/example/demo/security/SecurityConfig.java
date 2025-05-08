@@ -43,7 +43,8 @@ public class SecurityConfig {
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/admin/**", "/medico/**", "/paciente/**")
 						.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/login", "/api/auth/registrarPaciente","api/auth/listarUsuarios","api/auth/listaCentros")
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/login", "/api/auth/registrarPaciente",
+						"api/auth/listarUsuarios","api/auth/listaCentros","api/auth/listaMedicos")
 						.permitAll().requestMatchers("/admin/**").hasRole("ADMIN").requestMatchers("/paciente/**")
 						.hasRole("PACIENTE").requestMatchers("/medico/**").hasRole("MEDICO").anyRequest()
 						.authenticated())

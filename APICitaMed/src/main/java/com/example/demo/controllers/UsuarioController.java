@@ -21,6 +21,7 @@ import com.example.demo.entity.Medico;
 import com.example.demo.entity.Usuario;
 import com.example.demo.services.CentroDeSaludService;
 import com.example.demo.services.FileUploadService;
+import com.example.demo.services.MedicoService;
 import com.example.demo.services.UsuarioService;
 import com.example.demo.servicesImpl.JWTServiceImpl;
 
@@ -43,6 +44,10 @@ public class UsuarioController {
 	@Autowired
 	@Qualifier("CentroDeSaludService")
 	private CentroDeSaludService centroDeSaludService;
+	
+	@Autowired
+	@Qualifier("MedicoService")
+	private MedicoService medicoService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestParam String email, @RequestParam String contrasenya) {
@@ -156,6 +161,23 @@ public class UsuarioController {
 		respuesta.put("data", usuarios);
 		respuesta.put("mensaje", "Listado de usuarios");
 		
+		return ResponseEntity.ok(respuesta);
+	}
+	
+	@GetMapping("/listaMedicos")
+	public ResponseEntity<?> listadoDeMedicos() {
+		Map<String, Object> respuesta = new HashMap<>();
+
+		List<Medico> medicos = medicoService.listarMedicos();
+
+		if (medicos.isEmpty()) {
+			respuesta.put("mensaje", "No hay médicos");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
+
+		respuesta.put("data", medicos);
+		respuesta.put("mensaje", "Listado de médicos");
+
 		return ResponseEntity.ok(respuesta);
 	}
 

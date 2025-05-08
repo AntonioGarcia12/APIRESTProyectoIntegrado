@@ -248,23 +248,6 @@ public class AdministradorController {
 
 	}
 
-	@GetMapping("/listaMedicos")
-	public ResponseEntity<?> listadoDeMedicos() {
-		Map<String, Object> respuesta = new HashMap<>();
-
-		List<Medico> medicos = medicoService.listarMedicos();
-
-		if (medicos.isEmpty()) {
-			respuesta.put("mensaje", "No hay médicos");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-		}
-
-		respuesta.put("data", medicos);
-		respuesta.put("mensaje", "Listado de médicos");
-
-		return ResponseEntity.ok(respuesta);
-	}
-
 	
 
 }
