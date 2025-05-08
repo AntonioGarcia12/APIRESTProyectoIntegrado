@@ -265,37 +265,6 @@ public class AdministradorController {
 		return ResponseEntity.ok(respuesta);
 	}
 
-	@GetMapping("/listaCentros")
-	public ResponseEntity<?> listadoDeCentros() {
-		Map<String, Object> respuesta = new HashMap<>();
-
-		List<CentroDeSalud> centros = centroDeSaludService.listarCentroDeSaluds();
-
-		if (centros.isEmpty()) {
-			respuesta.put("mensaje", "No hay centros");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-		}
-
-		respuesta.put("data", centros);
-		respuesta.put("mensaje", "Listado de centros de salud");
-
-		return ResponseEntity.ok(respuesta);
-	}
 	
-	@GetMapping("/listarUsuarios")
-	public ResponseEntity<?> listarUsuario(){
-		Map<String, Object> respuesta = new HashMap<>();
-		List<Usuario>usuarios=usuarioService.listarUsuario();
-		
-		if(usuarios.isEmpty()) {
-			respuesta.put("mensaje", "No hay usuarios");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-		}
-		
-		respuesta.put("data", usuarios);
-		respuesta.put("mensaje", "Listado de usuarios");
-		
-		return ResponseEntity.ok(respuesta);
-	}
 
 }
