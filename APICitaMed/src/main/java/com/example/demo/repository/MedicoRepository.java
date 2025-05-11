@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Medico;
@@ -15,7 +16,8 @@ public interface MedicoRepository extends JpaRepository<Medico, Serializable> {
 
 	boolean existsByEmail(String email);
 
-	List<String> findByEspecialidad();
+	 @Query("SELECT DISTINCT m.especialidad FROM Medico m")
+	 List<String> findAllEspecialidades();
 	
 	boolean existsByCentroDeSaludId(Long id);
 }
