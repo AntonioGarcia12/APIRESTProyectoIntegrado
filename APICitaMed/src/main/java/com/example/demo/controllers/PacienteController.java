@@ -136,17 +136,17 @@ public class PacienteController {
 	}
 
 	@GetMapping("/buscarPorEspecialidad")
-	public ResponseEntity<?> buscarMedicosPorEspecialidad(@RequestParam String especialidad) {
+	public ResponseEntity<?> buscarMedicosPorEspecialidad() {
 		Map<String, Object> respuesta = new HashMap<>();
 
-		List<Medico> medicos = medicoService.buscarPorEspecialidad(especialidad);
+		List<String> especialidades = medicoService.buscarPorEspecialidad();
 
-		if (medicos.isEmpty()) {
-			respuesta.put("mensaje", "No hay médicos para en esa especialidad");
+		if (especialidades.isEmpty()) {
+			respuesta.put("mensaje", "No hay  especialidades");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
 		}
 
-		respuesta.put("data", medicos);
+		respuesta.put("data", especialidades);
 		respuesta.put("mensaje", "Búsqueda exitosa");
 
 		return ResponseEntity.ok(respuesta);
