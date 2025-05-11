@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.AuthResponseDTO;
 import com.example.demo.entity.Cita;
 import com.example.demo.entity.HistorialMedico;
 import com.example.demo.entity.HorarioMedico;
+import com.example.demo.entity.Medico;
 import com.example.demo.entity.Usuario;
 import com.example.demo.services.CitaService;
 import com.example.demo.services.HistorialMedicoService;
@@ -133,6 +135,42 @@ public class MedicoController {
 		respuesta.put("pacientes", pacientes);
 		respuesta.put("mensaje", "Listado de citas y pacientes obtenido correctamente");
 
+		return ResponseEntity.ok(respuesta);
+	}
+	
+	@GetMapping("/listarUnMedico/{id}")
+	public ResponseEntity<?> listarUnPaciente(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+		Map<String, Object> respuesta = new HashMap<>();
+
+		if (userDetails == null) {
+			respuesta.put("mensaje", "No hay usuario autenticado o no se ha proporcionado un token válido.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
+
+		Medico medicoAutenticado = medicoService.buscarPorEmail(userDetails.getUsername());
+		if (medicoAutenticado == null) {
+			respuesta.put("mensaje", "Paciente no encontrado en la base de datos.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
+
+		if (!medicoAutenticado.getId().equals(id)) {
+			respuesta.put("mensaje", "No tiene permiso para ver a otro paciente.");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
+		}
+
+		Medico medico = medicoService.buscarPorId(id);
+		if (medico == null) {
+			respuesta.put("mensaje", "Paciente no encontrado.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
+
+		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
+				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(),
+				medico.getActivo(), medico.getTelefono(), medico.getEmail(), medico.getDireccion(),
+				medico.getSexo(), null, medico.getImagen(), medico.getEspecialidad(), medico.getRol());
+
+		respuesta.put("data", response);
+		respuesta.put("mensaje", "Médico obtenido correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
 
