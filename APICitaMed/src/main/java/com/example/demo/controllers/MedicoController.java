@@ -167,7 +167,7 @@ public class MedicoController {
 		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
 				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(),
 				medico.getActivo(), medico.getTelefono(), medico.getEmail(), medico.getDireccion(),
-				medico.getSexo(), null, medico.getImagen(), medico.getEspecialidad(), medico.getRol());
+				medico.getSexo(), medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Médico obtenido correctamente");
