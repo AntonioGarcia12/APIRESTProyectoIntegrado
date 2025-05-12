@@ -173,5 +173,22 @@ public class MedicoController {
 		respuesta.put("mensaje", "Médico obtenido correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
+	
+	@GetMapping("/horarios/{id}")
+	public ResponseEntity<?> obtenerDisponibilidad(@PathVariable Long id) {
+
+		Map<String, Object> respuesta = new HashMap<>();
+
+		List<HorarioMedico> disponibilidad = horarioMedicoService.obtenerHorarioMedico(id);
+
+		if (disponibilidad.isEmpty()) {
+			respuesta.put("mensaje", "No hay horarios");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
+
+		respuesta.put("data", disponibilidad);
+		respuesta.put("mensaje", "Horarios obtenidos correctamente");
+		return ResponseEntity.ok(respuesta);
+	}
 
 }
