@@ -58,4 +58,10 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 		return horarioMedicoRepository.save(horarioExistente);
 	}
 
+	@Override
+	public void eliminarHorario(Long id) {
+		
+		horarioMedicoRepository.deleteById(id);		
+	}
+
 }
