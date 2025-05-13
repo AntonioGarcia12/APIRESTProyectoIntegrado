@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import jakarta.persistence.Column;
@@ -22,7 +23,7 @@ public class HorarioMedico {
 	private Medico medico;
 
 	@Column(nullable = false)
-	private LocalTime dia;
+	private LocalDate dia;
 
 	@Column(nullable = false)
 	private LocalTime horaInicio;
@@ -34,7 +35,7 @@ public class HorarioMedico {
 		super();
 	}
 
-	public HorarioMedico(Long id, Medico medico, LocalTime dia, LocalTime horaInicio, LocalTime horaFin) {
+	public HorarioMedico(Long id, Medico medico, LocalDate dia, LocalTime horaInicio, LocalTime horaFin) {
 		super();
 		this.id = id;
 		this.medico = medico;
@@ -59,11 +60,11 @@ public class HorarioMedico {
 		this.medico = medico;
 	}
 
-	public LocalTime getDia() {
+	public LocalDate getDia() {
 		return dia;
 	}
 
-	public void setDia(LocalTime dia) {
+	public void setDia(LocalDate dia) {
 		this.dia = dia;
 	}
 
