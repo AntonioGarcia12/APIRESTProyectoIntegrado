@@ -201,5 +201,19 @@ public class MedicoController {
 
 		return ResponseEntity.ok(respuesta);
 	}
+	
+	@GetMapping("/obtenerHorarioPorId/{id}")
+	public ResponseEntity<?> obtenerHorarioPorId(@PathVariable Long id) {
+
+		Map<String, Object> respuesta = new HashMap<>();
+
+		HorarioMedico horario = horarioMedicoService.obtenerHorarioMedicoPorId(id);
+
+		
+
+		respuesta.put("data", horario);
+		respuesta.put("mensaje", "Horarios obtenidos correctamente");
+		return ResponseEntity.ok(respuesta);
+	}
 
 }

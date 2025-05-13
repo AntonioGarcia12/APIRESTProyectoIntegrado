@@ -13,4 +13,6 @@ public interface HorarioMedicoService {
 	HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico);
 	
 	void eliminarHorario(Long id);
-}
+	
+	HorarioMedico obtenerHorarioMedicoPorId(Long id);
+	}

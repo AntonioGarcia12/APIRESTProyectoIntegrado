@@ -64,4 +64,10 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 		horarioMedicoRepository.deleteById(id);		
 	}
 
+	@Override
+	public HorarioMedico obtenerHorarioMedicoPorId(Long id) {
+		
+		return horarioMedicoRepository.findById(id).orElse(null);
+	}
+
 }
