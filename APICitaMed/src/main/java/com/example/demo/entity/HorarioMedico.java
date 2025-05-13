@@ -22,7 +22,7 @@ public class HorarioMedico {
 	private Medico medico;
 
 	@Column(nullable = false)
-	private String dia;
+	private LocalTime dia;
 
 	@Column(nullable = false)
 	private LocalTime horaInicio;
@@ -34,7 +34,7 @@ public class HorarioMedico {
 		super();
 	}
 
-	public HorarioMedico(Long id, Medico medico, String dia, LocalTime horaInicio, LocalTime horaFin) {
+	public HorarioMedico(Long id, Medico medico, LocalTime dia, LocalTime horaInicio, LocalTime horaFin) {
 		super();
 		this.id = id;
 		this.medico = medico;
@@ -59,11 +59,11 @@ public class HorarioMedico {
 		this.medico = medico;
 	}
 
-	public String getDia() {
+	public LocalTime getDia() {
 		return dia;
 	}
 
-	public void setDia(String dia) {
+	public void setDia(LocalTime dia) {
 		this.dia = dia;
 	}
 

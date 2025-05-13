@@ -46,7 +46,7 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 		HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
 
-		if (horarioMedico.getDia() != null && !horarioMedico.getDia().trim().isEmpty())
+		if (horarioMedico.getDia() != null)
 			horarioExistente.setDia(horarioMedico.getDia());
 
 		if (horarioMedico.getHoraInicio() != null)
