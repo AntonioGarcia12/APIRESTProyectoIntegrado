@@ -11,7 +11,7 @@ public class AuthResponseDTO {
 
 	private Long id;
 	private String nombre;
-	private String apellido;
+	private String apellidos;
 	private String dni;
 	private String numeroSeguridadSocial;
 	private LocalDate fechaNacimiento;
@@ -26,13 +26,13 @@ public class AuthResponseDTO {
 	private String rol;
 	private CentroDeSalud centroDeSalud;
 
-	public AuthResponseDTO(Long id, String nombre, String apellido, String dni, String numeroSeguridadSocial,
+	public AuthResponseDTO(Long id, String nombre, String apellidos, String dni, String numeroSeguridadSocial,
 			LocalDate fechaNacimiento, int activo, String telefono, String email, String direccion, String sexo,
 			String especialidad, String imagen, String token, String rol, CentroDeSalud centroDeSalud) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
-		this.apellido = apellido;
+		this.apellidos = apellidos;
 		this.dni = dni;
 		this.numeroSeguridadSocial = numeroSeguridadSocial;
 		this.fechaNacimiento = fechaNacimiento;
@@ -52,13 +52,13 @@ public class AuthResponseDTO {
 		super();
 	}
 
-	public AuthResponseDTO(Long id, String nombre, String apellido, String dni, String numeroSeguridadSocial,
+	public AuthResponseDTO(Long id, String nombre, String apellidos, String dni, String numeroSeguridadSocial,
 			LocalDate fechaNacimiento, int activo, String telefono, String email, String direccion,String sexo, String especialidad,
 			String imagen, String token, String rol) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
-		this.apellido = apellido;
+		this.apellidos = apellidos;
 		this.dni = dni;
 		this.numeroSeguridadSocial = numeroSeguridadSocial;
 		this.fechaNacimiento = fechaNacimiento;
@@ -73,12 +73,12 @@ public class AuthResponseDTO {
 		this.rol = rol;
 	}
 
-	public AuthResponseDTO(Long id, String nombre, String apellido, String dni, String numeroSeguridadSocial,
+	public AuthResponseDTO(Long id, String nombre, String apellidos, String dni, String numeroSeguridadSocial,
 			LocalDate fechaNacimiento, int activo, String telefono, String email, String direccion, String especialidad,
 			String imagen, String rol) {
 		this.id = id;
 		this.nombre = nombre;
-		this.apellido = apellido;
+		this.apellidos = apellidos;
 		this.dni = dni;
 		this.numeroSeguridadSocial = numeroSeguridadSocial;
 		this.fechaNacimiento = fechaNacimiento;
@@ -91,12 +91,12 @@ public class AuthResponseDTO {
 		this.rol = rol;
 	}
 
-	public AuthResponseDTO(Long id, String nombre, String apellido, String dni, String numeroSeguridadSocial,
+	public AuthResponseDTO(Long id, String nombre, String apellidos, String dni, String numeroSeguridadSocial,
 			LocalDate fechaNacimiento, int activo, String telefono, String email, String direccion, String imagen,
 			String rol) {
 		this.id = id;
 		this.nombre = nombre;
-		this.apellido = apellido;
+		this.apellidos = apellidos;
 		this.dni = dni;
 		this.numeroSeguridadSocial = numeroSeguridadSocial;
 		this.fechaNacimiento = fechaNacimiento;
@@ -124,12 +124,12 @@ public class AuthResponseDTO {
 		this.nombre = nombre;
 	}
 
-	public String getApellido() {
-		return apellido;
+	public String getApellidos() {
+		return apellidos;
 	}
 
-	public void setApellido(String apellido) {
-		this.apellido = apellido;
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
 	}
 
 	public LocalDate getFechaNacimiento() {
