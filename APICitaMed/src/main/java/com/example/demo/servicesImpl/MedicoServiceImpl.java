@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.CentroDeSalud;
 import com.example.demo.entity.Medico;
+import com.example.demo.entity.Usuario;
 import com.example.demo.repository.CentroDeSaludRepository;
 import com.example.demo.repository.MedicoRepository;
+import com.example.demo.repository.UsuarioRepository;
 import com.example.demo.services.MedicoService;
 
 @Service("MedicoService")
@@ -23,6 +25,10 @@ public class MedicoServiceImpl implements MedicoService {
 	@Autowired
 	@Qualifier("CentroDeSaludRepository")
 	private CentroDeSaludRepository centroRepository;
+	
+	@Autowired
+	@Qualifier("UsuarioRepository")
+	private UsuarioRepository usuarioRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -116,6 +122,12 @@ public class MedicoServiceImpl implements MedicoService {
 	public boolean existeMedicoCentroDeSalud(Long id) {
 		
 		return medicoRepository.existsByCentroDeSaludId(id);
+	}
+	
+	@Override
+	public List<Usuario> listarPacientes() {
+		
+		return usuarioRepository.findAll().stream().filter(a->a.getRol().equals("PACIENTE")).toList();
 	}
 
 }

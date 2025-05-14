@@ -23,4 +23,5 @@ public interface UsuarioService {
 	Usuario actulizarEstado(Long id, int activo);
 	
 	List<Usuario>listarUsuario();
+	
 }

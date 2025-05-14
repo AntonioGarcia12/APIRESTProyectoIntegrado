@@ -3,6 +3,7 @@ package com.example.demo.services;
 import java.util.List;
 
 import com.example.demo.entity.Medico;
+import com.example.demo.entity.Usuario;
 
 public interface MedicoService {
 
@@ -23,4 +24,6 @@ public interface MedicoService {
 	List<String> buscarPorEspecialidad();
 	
 	boolean existeMedicoCentroDeSalud(Long id);
+	
+	List<Usuario>listarPacientes();
 }

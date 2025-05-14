@@ -227,11 +227,20 @@ public class MedicoController {
 
 		HorarioMedico horario = horarioMedicoService.obtenerHorarioMedicoPorId(id);
 
-		
-
 		respuesta.put("data", horario);
 		respuesta.put("mensaje", "Horarios obtenidos correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
+	
+	@GetMapping("/obtenerPacientes")
+	public ResponseEntity<?> obtenerPacientes() {
 
+		Map<String, Object> respuesta = new HashMap<>();
+
+		List<Usuario> pacientesMedico = medicoService.listarPacientes();
+
+		respuesta.put("data", pacientesMedico);
+		respuesta.put("mensaje", "Pacientes obtenidos correctamente");
+		return ResponseEntity.ok(respuesta);
+	}
 }

@@ -110,4 +110,5 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return usuarioRepository.findAll().stream().filter(a->!a.getRol().equals("ADMIN")).toList();
 	}
 
+
 }
