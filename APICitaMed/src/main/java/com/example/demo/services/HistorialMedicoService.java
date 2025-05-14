@@ -12,4 +12,8 @@ public interface HistorialMedicoService {
 	
 	List<HistorialMedico> listarHistorialesMedicos();
 	
+	void borrarHistorialMedico(Long id);
+	
+	HistorialMedico editarHistorialMedico(Long id,HistorialMedico historialMedico);
+	
 }

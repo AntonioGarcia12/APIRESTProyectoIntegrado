@@ -65,4 +65,26 @@ public class HistorialMedicoServiceImpl implements HistorialMedicoService {
 		return historialMedicoRepository.findAll();
 	}
 
+	@Override
+	public void borrarHistorialMedico(Long id) {
+		
+		historialMedicoRepository.deleteById(id);
+		
+	}
+
+	@Override
+	public HistorialMedico editarHistorialMedico(Long id, HistorialMedico historialMedico) {
+		
+		HistorialMedico historialExistente = historialMedicoRepository.findById(id).orElseThrow(() -> new RuntimeException("Historial no encontrado con id: " + id));
+		
+		if(historialMedico.getDiagnostico() != null)
+			historialExistente.setDiagnostico(historialMedico.getDiagnostico());
+		
+		if(historialMedico.getTratamiento() != null)
+			historialExistente.setTratamiento(historialMedico.getTratamiento());
+		
+		
+		return historialMedicoRepository.save(historialExistente);
+	}
+
 }
