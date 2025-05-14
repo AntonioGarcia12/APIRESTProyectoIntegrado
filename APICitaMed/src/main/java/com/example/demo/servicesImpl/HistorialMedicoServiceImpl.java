@@ -59,4 +59,10 @@ public class HistorialMedicoServiceImpl implements HistorialMedicoService {
 		return historialMedicoRepository.findByPaciente_Id(idPaciente);
 	}
 
+	@Override
+	public List<HistorialMedico> listarHistorialesMedicos() {
+		
+		return historialMedicoRepository.findAll();
+	}
+
 }

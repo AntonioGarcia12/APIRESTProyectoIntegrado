@@ -9,4 +9,7 @@ public interface HistorialMedicoService {
 	HistorialMedico crearHistorialMedico(Long idMedico, Long idPaciente, String diagnostico, String tratamiento);
 
 	List<HistorialMedico> buscarHistorialPorIdPaciente(Long idPaciente);
+	
+	List<HistorialMedico> listarHistorialesMedicos();
+	
 }

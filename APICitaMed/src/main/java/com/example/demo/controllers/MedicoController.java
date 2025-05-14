@@ -85,7 +85,25 @@ public class MedicoController {
 		return ResponseEntity.ok(respuesta);
 
 	}
+	
+	@GetMapping("/historiales")
+	public ResponseEntity<?> obtenerHistorialesMedicos(){
+		Map<String, Object> respuesta = new HashMap<>();
+		
+		List<HistorialMedico> historiales = historialMedicoService.listarHistorialesMedicos();
+		
+		if (historiales.isEmpty()) {
+			respuesta.put("mensaje", "No hay historiales médicos");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
 
+		respuesta.put("data", historiales);
+		respuesta.put("mensaje", "Historiales obtenidos");
+		return ResponseEntity.ok(respuesta);
+	}
+	
+	
+	
 	@PutMapping("/actualizarEstadoCita/{idCita}")
 	public ResponseEntity<?> actualizarEstadoCitaPorMedico(@PathVariable Long idCita, @RequestParam String estado) {
 		Map<String, Object> respuesta = new HashMap<>();
