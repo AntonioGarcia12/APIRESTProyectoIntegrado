@@ -24,7 +24,7 @@ import com.example.demo.dto.AuthResponseDTO;
 import com.example.demo.dto.CitaDTO;
 import com.example.demo.entity.Cita;
 import com.example.demo.entity.HorarioMedico;
-import com.example.demo.entity.Medico;
+
 import com.example.demo.entity.Usuario;
 import com.example.demo.services.CitaService;
 import com.example.demo.services.FileUploadService;
@@ -159,7 +159,7 @@ public class PacienteController {
 		citaService.crearCita(citaDTO, id);
 
 		CitaDTO cita = new CitaDTO(citaDTO.getIdMedico(), citaDTO.getIdCentro(), citaDTO.getFecha(),
-				citaDTO.getEstado(), citaDTO.getDescripcion());
+				citaDTO.getEstado());
 
 		respuesta.put("data", cita);
 		respuesta.put("mensaje", "Cita creada correctamente");
@@ -231,7 +231,7 @@ public class PacienteController {
 		cita.setId(id);
 		citaService.editarCita(cita);
 
-		Cita cita2 = new Cita(cita.getFecha(), cita.getDescripcion());
+		Cita cita2 = new Cita(cita.getFecha());
 
 		respuesta.put("data", cita2);
 		respuesta.put("mensaje", "Cita actualizada correctamente");

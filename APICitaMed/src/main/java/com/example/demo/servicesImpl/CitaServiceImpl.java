@@ -70,7 +70,7 @@ public class CitaServiceImpl implements CitaService {
 		citas.setCentroDeSalud(centro);
 		citas.setFecha(cita.getFecha());
 		citas.setEstado("PENDIENTE");
-		citas.setDescripcion(cita.getDescripcion());
+		
 
 		citaRepository.save(citas);
 
@@ -98,11 +98,7 @@ public class CitaServiceImpl implements CitaService {
 			modificacionRealizada = true;
 		}
 
-		if (cita.getDescripcion() != null && !cita.getDescripcion().trim().isEmpty()) {
-			citaExistente.setDescripcion(cita.getDescripcion());
-			mensajeEmail.append("Nueva descripción: ").append(cita.getDescripcion()).append(". ");
-			modificacionRealizada = true;
-		}
+		
 
 		if (!modificacionRealizada)
 			throw new RuntimeException("No se proporcionó información nueva para actualizar la cita.");

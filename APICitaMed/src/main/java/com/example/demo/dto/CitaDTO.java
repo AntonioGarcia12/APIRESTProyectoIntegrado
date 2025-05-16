@@ -8,15 +8,14 @@ public class CitaDTO {
 	private Long idCentro;
 	private LocalDateTime fecha;
 	private String estado;
-	private String descripcion;
+	
 
-	public CitaDTO(Long idMedico, Long idCentro, LocalDateTime fecha, String estado, String descripcion) {
+	public CitaDTO(Long idMedico, Long idCentro, LocalDateTime fecha, String estado) {
 		super();
 		this.idMedico = idMedico;
 		this.idCentro = idCentro;
 		this.fecha = fecha;
 		this.estado = "PENDIENTE";
-		this.descripcion = descripcion;
 	}
 
 	public CitaDTO() {
@@ -55,12 +54,6 @@ public class CitaDTO {
 		this.estado = estado;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+	
 
 }

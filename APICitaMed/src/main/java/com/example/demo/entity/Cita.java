@@ -40,15 +40,13 @@ public class Cita {
 	@NotNull
 	private String estado;
 
-	@Column(length = 500)
-	private String descripcion;
 
 	public Cita() {
 		super();
 	}
 
 	public Cita(Long id, Medico medico, Usuario paciente, CentroDeSalud centroDeSalud, LocalDateTime fecha,
-			String estado, String descripcion) {
+			String estado) {
 		super();
 		this.id = id;
 		this.medico = medico;
@@ -56,13 +54,11 @@ public class Cita {
 		this.centroDeSalud = centroDeSalud;
 		this.fecha = fecha;
 		this.estado = estado;
-		this.descripcion = descripcion;
 	}
 
-	public Cita(LocalDateTime fecha, String descripcion) {
+	public Cita(LocalDateTime fecha) {
 		super();
 		this.fecha = fecha;
-		this.descripcion = descripcion;
 	}
 
 	public Long getId() {
@@ -113,11 +109,5 @@ public class Cita {
 		this.estado = estado;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+	
 }
