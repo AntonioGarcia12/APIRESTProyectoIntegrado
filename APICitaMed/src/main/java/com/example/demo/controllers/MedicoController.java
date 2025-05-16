@@ -206,9 +206,12 @@ public class MedicoController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
 		}
 
-		
+		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
+				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(),
+				medico.getActivo(), medico.getTelefono(), medico.getEmail(), medico.getDireccion(),
+				medico.getSexo(), medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
 
-		respuesta.put("data", medico);
+		respuesta.put("data", response);
 		respuesta.put("mensaje", "Médico obtenido correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
