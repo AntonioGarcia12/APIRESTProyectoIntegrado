@@ -1,13 +1,18 @@
 package com.example.demo.servicesImpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entity.Cita;
 import com.example.demo.entity.HorarioMedico;
 import com.example.demo.entity.Medico;
+import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.HorarioMedicoRepository;
 import com.example.demo.repository.MedicoRepository;
 import com.example.demo.services.HorarioMedicoService;
@@ -22,6 +27,10 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	@Autowired
 	@Qualifier("MedicoRepository")
 	private MedicoRepository medicoRepository;
+	
+	@Autowired
+	@Qualifier("CitaRepository")
+	private CitaRepository citaRepository;
 
 	@Override
 	public HorarioMedico crearHorarioMedico(HorarioMedico horarioMedico) {
@@ -35,10 +44,24 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	}
 
 	@Override
-	public List<HorarioMedico> obtenerHorarioMedico(Long id) {
+	public List<HorarioMedico> obtenerHorarioMedico(Long medicoId) {
+	    List<HorarioMedico> horarios = horarioMedicoRepository.findByMedico_Id(medicoId);
 
-		return horarioMedicoRepository.findByMedico_Id(id);
-	}
+	    
+	    List<Cita> citas = citaRepository.findByMedico_IdAndEstadoNot(medicoId, "CANCELADA");
+
+	    Set<LocalDateTime> ocupadas = citas.stream()
+	      .map(Cita::getFecha)
+	      .collect(Collectors.toSet());
+
+	    
+	    return horarios.stream()
+	      .filter(h -> {
+	        LocalDateTime dt = LocalDateTime.of(h.getDia(), h.getHoraInicio());
+	        return !ocupadas.contains(dt);
+	      })
+	      .collect(Collectors.toList());
+	  }
 
 	@Override
 	public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {

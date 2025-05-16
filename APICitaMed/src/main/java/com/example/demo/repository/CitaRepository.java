@@ -17,4 +17,6 @@ public interface CitaRepository extends JpaRepository<Cita, Serializable> {
 	List<Object[]> countCitasPorMes();
 
 	List<Cita> findByMedico_Id(Long idMedico);
+	
+	List<Cita> findByMedico_IdAndEstadoNot(Long medicoId, String estado);
 }
