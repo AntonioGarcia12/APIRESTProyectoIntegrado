@@ -153,23 +153,38 @@ public class PacienteController {
 	}
 
 	@PostMapping("/crearCita/{id}")
-	public ResponseEntity<?> crearCita(@RequestBody CitaDTO citaDTO, @PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails) {
+	public ResponseEntity<?> crearCita(@RequestBody CitaDTO citaDTO, @PathVariable Long id,
+			@AuthenticationPrincipal UserDetails userDetails) {
 		Map<String, Object> respuesta = new HashMap<>();
-		
+
 		if (userDetails == null) {
-			respuesta.put("mensaje", "No hay usuario autenticado o no se ha proporcionado un token válido.");
+			respuesta.put("mensaje", "No hay usuario autenticado o token inválido.");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
 		}
 
-		citaService.crearCita(citaDTO, id);
+		Usuario usuario = usuarioService.buscarPorEmail(userDetails.getUsername());
+		if (usuario == null) {
+			respuesta.put("mensaje", "Usuario no encontrado.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
 
+		if (!"PACIENTE".equals(usuario.getRol())) {
+			respuesta.put("mensaje", "Solo los pacientes pueden reservar citas.");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
+		}
+
+		if (!usuario.getId().equals(id)) {
+			respuesta.put("mensaje", "No puede crear citas para otro paciente.");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
+		}
+
+		citaService.crearCita(citaDTO, id);
 		CitaDTO cita = new CitaDTO(citaDTO.getIdMedico(), citaDTO.getIdCentro(), citaDTO.getFecha(),
 				citaDTO.getEstado());
 
 		respuesta.put("data", cita);
 		respuesta.put("mensaje", "Cita creada correctamente");
 		return ResponseEntity.ok(respuesta);
-
 	}
 
 	@GetMapping("/historialCitas/{id}")
