@@ -180,8 +180,8 @@ public class MedicoController {
 		return ResponseEntity.ok(respuesta);
 	}
 	
-	@GetMapping("/listarUnMedico/{id}")
-	public ResponseEntity<?> listarUnPaciente(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+	@GetMapping("/listarMedico/{id}")
+	public ResponseEntity<?> listarUnMedico(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
 		Map<String, Object> respuesta = new HashMap<>();
 
 		if (userDetails == null) {
@@ -191,18 +191,18 @@ public class MedicoController {
 
 		Medico medicoAutenticado = medicoService.buscarPorEmail(userDetails.getUsername());
 		if (medicoAutenticado == null) {
-			respuesta.put("mensaje", "Paciente no encontrado en la base de datos.");
+			respuesta.put("mensaje", "Médico no encontrado en la base de datos.");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
 		}
 
 		if (!medicoAutenticado.getId().equals(id)) {
-			respuesta.put("mensaje", "No tiene permiso para ver a otro paciente.");
+			respuesta.put("mensaje", "No tiene permiso para ver a otro médico.");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
 		}
 
 		Medico medico = medicoService.buscarPorId(id);
 		if (medico == null) {
-			respuesta.put("mensaje", "Paciente no encontrado.");
+			respuesta.put("mensaje", "Médico no encontrado.");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
 		}
 
