@@ -153,8 +153,13 @@ public class PacienteController {
 	}
 
 	@PostMapping("/crearCita/{id}")
-	public ResponseEntity<?> crearCita(@RequestBody CitaDTO citaDTO, @PathVariable Long id) {
+	public ResponseEntity<?> crearCita(@RequestBody CitaDTO citaDTO, @PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails) {
 		Map<String, Object> respuesta = new HashMap<>();
+		
+		if (userDetails == null) {
+			respuesta.put("mensaje", "No hay usuario autenticado o no se ha proporcionado un token válido.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
 
 		citaService.crearCita(citaDTO, id);
 
