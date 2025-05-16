@@ -313,27 +313,22 @@ public class PacienteController {
 		respuesta.put("mensaje", "Disponibilidad completa obtenida correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
-	
+
 	@GetMapping("/listarUnMedico/{id}")
 	public ResponseEntity<?> listarUnMedico(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+
 		Map<String, Object> respuesta = new HashMap<>();
 
 		if (userDetails == null) {
-			respuesta.put("mensaje", "No hay usuario autenticado o no se ha proporcionado un token válido.");
+			respuesta.put("mensaje", "No hay usuario autenticado o token inválido.");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
 		}
 
-		Medico medicoAutenticado = medicoService.buscarPorEmail(userDetails.getUsername());
-		if (medicoAutenticado == null) {
-			respuesta.put("mensaje", "Médico no encontrado en la base de datos.");
+		Usuario paciente = usuarioService.buscarPorEmail(userDetails.getUsername());
+		if (paciente == null) {
+			respuesta.put("mensaje", "Paciente no encontrado en la base de datos.");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
 		}
-
-		if (!medicoAutenticado.getId().equals(id)) {
-			respuesta.put("mensaje", "No tiene permiso para ver a otro médico.");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
-		}
-
 		Medico medico = medicoService.buscarPorId(id);
 		if (medico == null) {
 			respuesta.put("mensaje", "Médico no encontrado.");
@@ -341,9 +336,9 @@ public class PacienteController {
 		}
 
 		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
-				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(),
-				medico.getActivo(), medico.getTelefono(), medico.getEmail(), medico.getDireccion(),
-				medico.getSexo(), medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
+				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(), medico.getActivo(),
+				medico.getTelefono(), medico.getEmail(), medico.getDireccion(), medico.getSexo(),
+				medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Médico obtenido correctamente");
