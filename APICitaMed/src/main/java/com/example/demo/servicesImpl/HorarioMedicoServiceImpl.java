@@ -27,7 +27,7 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	@Autowired
 	@Qualifier("MedicoRepository")
 	private MedicoRepository medicoRepository;
-	
+
 	@Autowired
 	@Qualifier("CitaRepository")
 	private CitaRepository citaRepository;
@@ -45,23 +45,8 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 
 	@Override
 	public List<HorarioMedico> obtenerHorarioMedico(Long medicoId) {
-	    List<HorarioMedico> horarios = horarioMedicoRepository.findByMedico_Id(medicoId);
-
-	    
-	    List<Cita> citas = citaRepository.findByMedico_IdAndEstadoNot(medicoId, "CANCELADA");
-
-	    Set<LocalDateTime> ocupadas = citas.stream()
-	      .map(Cita::getFecha)
-	      .collect(Collectors.toSet());
-
-	    
-	    return horarios.stream()
-	      .filter(h -> {
-	        LocalDateTime dt = LocalDateTime.of(h.getDia(), h.getHoraInicio());
-	        return !ocupadas.contains(dt);
-	      })
-	      .collect(Collectors.toList());
-	  }
+		return horarioMedicoRepository.findByMedico_Id(medicoId);
+	}
 
 	@Override
 	public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
@@ -83,14 +68,25 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 
 	@Override
 	public void eliminarHorario(Long id) {
-		
-		horarioMedicoRepository.deleteById(id);		
+
+		horarioMedicoRepository.deleteById(id);
 	}
 
 	@Override
 	public HorarioMedico obtenerHorarioMedicoPorId(Long id) {
-		
+
 		return horarioMedicoRepository.findById(id).orElse(null);
 	}
 
+	@Override
+	public List<HorarioMedico> obtenerDisponibilidadParaPaciente(Long id) {
+		List<Cita> citas = citaRepository.findByMedico_IdAndEstadoNot(id, "CANCELADA");
+
+		Set<LocalDateTime> ocupadas = citas.stream().map(Cita::getFecha).collect(Collectors.toSet());
+
+		return horarioMedicoRepository.findByMedico_Id(id).stream().filter(h -> {
+			LocalDateTime inicio = LocalDateTime.of(h.getDia(), h.getHoraInicio());
+			return !ocupadas.contains(inicio);
+		}).collect(Collectors.toList());
+	}
 }

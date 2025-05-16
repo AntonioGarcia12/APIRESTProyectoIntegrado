@@ -302,7 +302,7 @@ public class PacienteController {
 
 		Map<String, Object> respuesta = new HashMap<>();
 
-		List<HorarioMedico> disponibilidad = horarioMedicoService.obtenerHorarioMedico(id);
+		List<HorarioMedico> disponibilidad = horarioMedicoService.obtenerDisponibilidadParaPaciente(id);
 
 		if (disponibilidad.isEmpty()) {
 			respuesta.put("mensaje", "No hay horarios");
