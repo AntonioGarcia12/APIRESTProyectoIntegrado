@@ -59,7 +59,7 @@ public class CitaServiceImpl implements CitaService {
 		DateTimeFormatter fechaFmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
 		String titulo = "con el médico";
-		if ("Mujer".equalsIgnoreCase(paciente.getSexo()))
+		if ("Mujer".equalsIgnoreCase(medico.getSexo()))
 			titulo = "con la doctora";
 
 		StringBuilder texto = new StringBuilder("Ha reservado una cita para la fecha: ");

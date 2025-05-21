@@ -10,7 +10,7 @@ public interface HorarioMedicoService {
 
 	List<HorarioMedico> obtenerHorarioMedico(Long id);
 
-	HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico);
+	HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico, Long citaId);
 	
 	void eliminarHorario(Long id);
 	

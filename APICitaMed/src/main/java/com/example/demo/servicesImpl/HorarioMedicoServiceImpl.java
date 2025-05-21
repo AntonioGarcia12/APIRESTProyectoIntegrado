@@ -56,62 +56,46 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 		return horarioMedicoRepository.findByMedico_Id(medicoId);
 	}
 
-	public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
+	@Override
+	public HorarioMedico editarHorario(Long horarioId, HorarioMedico dto, Long citaId) {
+		HorarioMedico h = horarioMedicoRepository.findById(horarioId)
+				.orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + horarioId));
 
-		HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
+		if (dto.getDia() != null)
+			h.setDia(dto.getDia());
+		if (dto.getHoraInicio() != null)
+			h.setHoraInicio(dto.getHoraInicio());
+		if (dto.getHoraFin() != null)
+			h.setHoraFin(dto.getHoraFin());
 
-		if (horarioMedico.getDia() != null)
-			horarioExistente.setDia(horarioMedico.getDia());
-		if (horarioMedico.getHoraInicio() != null)
-			horarioExistente.setHoraInicio(horarioMedico.getHoraInicio());
-		if (horarioMedico.getHoraFin() != null)
-			horarioExistente.setHoraFin(horarioMedico.getHoraFin());
+		h = horarioMedicoRepository.save(h);
 
-		HorarioMedico actualizado = horarioMedicoRepository.save(horarioExistente);
+		if (citaId != null) {
+			Cita cita = citaRepository.findById(citaId)
+					.orElseThrow(() -> new RuntimeException("Cita no encontrada con id: " + citaId));
 
-		LocalDate dia = horarioExistente.getDia();
-		LocalDateTime desde = dia.atStartOfDay();
-		LocalDateTime hasta = dia.atTime(23, 59, 59);
-
-		List<Cita> citasAfectadas = citaRepository
-				.findByMedico_IdAndFechaBetween(horarioExistente.getMedico().getId(), desde, hasta).stream()
-				.filter(c -> "PENDIENTE".equalsIgnoreCase(c.getEstado())).toList();
-
-		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-
-		for (Cita cita : citasAfectadas) {
-			LocalDateTime oldFecha = cita.getFecha();
-			LocalTime t = oldFecha.toLocalTime();
-			LocalDateTime nuevaFecha = oldFecha;
-
-			if (t.isBefore(horarioExistente.getHoraInicio()))
-				nuevaFecha = LocalDateTime.of(dia, horarioExistente.getHoraInicio());
-			else if (t.isAfter(horarioExistente.getHoraFin()))
-				nuevaFecha = LocalDateTime.of(dia, horarioExistente.getHoraFin());
-
-			if (!nuevaFecha.equals(oldFecha)) {
-				cita.setFecha(nuevaFecha);
-				citaRepository.save(cita);
+			if (!cita.getMedico().getId().equals(h.getMedico().getId())
+					|| !cita.getFecha().toLocalDate().equals(h.getDia())) {
+				throw new RuntimeException("La cita no corresponde al mismo médico o día");
 			}
 
-			StringBuilder mensajeEmail = new StringBuilder("Su cita ha sido modificada: ");
-			if(cita.getMedico().getSexo().equals("Mujer")) {
-				mensajeEmail.append("Nueva fecha: ").append(nuevaFecha.format(fmt)).append(". Con la doctora: ")
-				.append(cita.getMedico().getNombre()).append(" ").append(cita.getMedico().getApellidos());
-			}else {
-				mensajeEmail.append("Nueva fecha: ").append(nuevaFecha.format(fmt)).append(". Con el doctor: ")
-				.append(cita.getMedico().getNombre()).append(" ").append(cita.getMedico().getApellidos());
-			}
+			LocalDateTime nuevaFecha = LocalDateTime.of(h.getDia(), h.getHoraInicio());
+			cita.setFecha(nuevaFecha);
+			citaRepository.save(cita);
 
-			SimpleMailMessage message = new SimpleMailMessage();
-			message.setTo(cita.getPaciente().getEmail());
-			message.setSubject("Cita modificada");
-			message.setText(mensajeEmail.toString());
-			mailSender.send(message);
+			DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+			StringBuilder msg = new StringBuilder("Su cita ha sido modificada: ").append("Nueva fecha: ")
+					.append(nuevaFecha.format(fmt)).append(". ").append("Con el médico: ")
+					.append(cita.getMedico().getNombre()).append(" ").append(cita.getMedico().getApellidos());
+
+			SimpleMailMessage mail = new SimpleMailMessage();
+			mail.setTo(cita.getPaciente().getEmail());
+			mail.setSubject("Cita modificada");
+			mail.setText(msg.toString());
+			mailSender.send(mail);
 		}
 
-		return actualizado;
+		return h;
 	}
 
 	@Override

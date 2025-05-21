@@ -148,10 +148,10 @@ public class MedicoController {
 	}
 
 	@PutMapping("/editarHorario/{id}")
-	public ResponseEntity<?> editarHorario(@PathVariable Long id, @RequestBody HorarioMedico horarioMedico) {
+	public ResponseEntity<?> editarHorario(@PathVariable Long id, @RequestBody HorarioMedico horarioMedico, @RequestParam(required=false) Long citaId ) {
 		Map<String, Object> respuesta = new HashMap<>();
 
-		HorarioMedico horarioActualizado = horarioMedicoService.editarHorario(id, horarioMedico);
+		HorarioMedico horarioActualizado = horarioMedicoService.editarHorario(id, horarioMedico,citaId);
 		respuesta.put("data", horarioActualizado);
 		respuesta.put("mensaje", "Horario actualizado correctamente");
 		return ResponseEntity.ok(respuesta);
