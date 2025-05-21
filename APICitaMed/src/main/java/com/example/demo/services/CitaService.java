@@ -12,8 +12,6 @@ public interface CitaService {
 
 	List<Cita> historialCita(Long id);
 
-	void editarCita(Cita cita);
-
 	Cita buscarCitaPorId(Long id);
 
 	void cancelarCita(Long id, Long idPaciente);

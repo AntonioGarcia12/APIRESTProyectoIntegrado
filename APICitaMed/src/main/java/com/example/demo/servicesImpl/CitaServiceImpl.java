@@ -83,39 +83,6 @@ public class CitaServiceImpl implements CitaService {
 				.collect(Collectors.toList());
 	}
 
-	@Override
-	public void editarCita(Cita cita) {
-
-		Cita citaExistente = citaRepository.findById(cita.getId())
-				.orElseThrow(() -> new RuntimeException("Cita no encontrada con id: " + cita.getId()));
-
-		StringBuilder mensajeEmail = new StringBuilder("Su cita ha sido modificada: ");
-		boolean modificacionRealizada = false;
-
-		if (cita.getFecha() != null) {
-			citaExistente.setFecha(cita.getFecha());
-			mensajeEmail.append("Nueva fecha: ").append(cita.getFecha().toString()).append(". ");
-			modificacionRealizada = true;
-		}
-
-		
-
-		if (!modificacionRealizada)
-			throw new RuntimeException("No se proporcionó información nueva para actualizar la cita.");
-
-		citaRepository.save(citaExistente);
-
-		String nombreMedico = (citaExistente.getMedico() != null)
-				? citaExistente.getMedico().getNombre() + " " + citaExistente.getMedico().getApellidos()
-				: "sin asignar";
-
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(citaExistente.getPaciente().getEmail());
-		message.setSubject("Cita modificada");
-		message.setText(mensajeEmail.append("Con el médico: ").append(nombreMedico).toString());
-		mailSender.send(message);
-
-	}
 
 	@Override
 	public Cita buscarCitaPorId(Long id) {

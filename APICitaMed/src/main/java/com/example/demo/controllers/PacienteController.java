@@ -220,44 +220,7 @@ public class PacienteController {
 		return ResponseEntity.ok(respuesta);
 	}
 
-	@PutMapping("/editarCita/{id}")
-	public ResponseEntity<?> editarCita(@RequestBody Cita cita, @PathVariable Long id,
-			@AuthenticationPrincipal UserDetails userDetails) {
-		Map<String, Object> respuesta = new HashMap<>();
-
-		if (userDetails == null) {
-			respuesta.put("mensaje", "No hay usuario autenticado o no se ha proporcionado un token válido.");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
-		}
-
-		Usuario pacienteAutenticado = usuarioService.buscarPorEmail(userDetails.getUsername());
-		if (pacienteAutenticado == null) {
-			respuesta.put("mensaje", "Paciente no encontrado en la base de datos.");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
-		}
-
-		Cita existingCita = citaService.buscarCitaPorId(id);
-		if (existingCita == null) {
-			respuesta.put("mensaje", "Cita no encontrada");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-		}
-
-		if (existingCita.getPaciente() == null
-				|| !existingCita.getPaciente().getId().equals(pacienteAutenticado.getId())) {
-			respuesta.put("mensaje", "No tiene permiso para editar esta cita, pertenece a otro paciente.");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
-		}
-
-		cita.setId(id);
-		citaService.editarCita(cita);
-
-		Cita cita2 = new Cita(cita.getFecha());
-
-		respuesta.put("data", cita2);
-		respuesta.put("mensaje", "Cita actualizada correctamente");
-		return ResponseEntity.ok(respuesta);
-
-	}
+	
 
 	@PutMapping("/cancelarCita/{id}")
 	public ResponseEntity<?> cancelarCita(@PathVariable Long id, @RequestParam Long idPaciente,

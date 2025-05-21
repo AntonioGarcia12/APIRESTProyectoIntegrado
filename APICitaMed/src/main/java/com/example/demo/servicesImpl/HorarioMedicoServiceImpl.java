@@ -1,12 +1,16 @@
 package com.example.demo.servicesImpl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Cita;
@@ -31,6 +35,9 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	@Autowired
 	@Qualifier("CitaRepository")
 	private CitaRepository citaRepository;
+	
+	@Autowired
+    private JavaMailSender mailSender;
 
 	@Override
 	public HorarioMedico crearHorarioMedico(HorarioMedico horarioMedico) {
@@ -49,22 +56,85 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	}
 
 	@Override
-	public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
+    public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
+        // 1. Recuperar y actualizar el horario
+        HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
 
-		HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
+        if (horarioMedico.getDia() != null) {
+            horarioExistente.setDia(horarioMedico.getDia());
+        }
+        if (horarioMedico.getHoraInicio() != null) {
+            horarioExistente.setHoraInicio(horarioMedico.getHoraInicio());
+        }
+        if (horarioMedico.getHoraFin() != null) {
+            horarioExistente.setHoraFin(horarioMedico.getHoraFin());
+        }
 
-		if (horarioMedico.getDia() != null)
-			horarioExistente.setDia(horarioMedico.getDia());
+        HorarioMedico actualizado = horarioMedicoRepository.save(horarioExistente);
 
-		if (horarioMedico.getHoraInicio() != null)
-			horarioExistente.setHoraInicio(horarioMedico.getHoraInicio());
+        
+        LocalDate dia = horarioExistente.getDia();
+        LocalDateTime desde = dia.atStartOfDay();
+        LocalDateTime hasta = dia.atTime(23, 59, 59);
 
-		if (horarioMedico.getHoraFin() != null)
-			horarioExistente.setHoraFin(horarioMedico.getHoraFin());
+        List<Cita> citasAfectadas = citaRepository
+            .findByMedico_IdAndFechaBetween(horarioExistente.getMedico().getId(), desde, hasta)
+            .stream()
+            .filter(c -> "PENDIENTE".equalsIgnoreCase(c.getEstado()))
+            .toList();
 
-		return horarioMedicoRepository.save(horarioExistente);
-	}
+        
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        for (Cita cita : citasAfectadas) {
+            StringBuilder mensajeEmail = new StringBuilder("Su cita ha sido modificada: ");
+            boolean modificacionRealizada = false;
+
+            
+            if (horarioMedico.getDia() != null) {
+                mensajeEmail
+                    .append("Nuevo día: ")
+                    .append(horarioExistente.getDia().toString())
+                    .append(". ");
+                modificacionRealizada = true;
+            }
+            if (horarioMedico.getHoraInicio() != null) {
+                mensajeEmail
+                    .append("Nueva hora inicio: ")
+                    .append(horarioExistente.getHoraInicio().format(fmt))
+                    .append(". ");
+                modificacionRealizada = true;
+            }
+            if (horarioMedico.getHoraFin() != null) {
+                mensajeEmail
+                    .append("Nueva hora fin: ")
+                    .append(horarioExistente.getHoraFin().format(fmt))
+                    .append(". ");
+                modificacionRealizada = true;
+            }
+
+            if (!modificacionRealizada)
+                throw new RuntimeException("No se proporcionó información nueva para actualizar el horario.");
+            
+
+            
+            String nombreMedico = cita.getMedico().getNombre() + " " + cita.getMedico().getApellidos();
+
+            
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(cita.getPaciente().getEmail());
+            message.setSubject("Cita modificada");
+            message.setText(
+                mensajeEmail
+                    .append("Con el médico: ")
+                    .append(nombreMedico)
+                    .toString()
+            );
+            mailSender.send(message);
+        }
+
+        return actualizado;
+    }
 
 	@Override
 	public void eliminarHorario(Long id) {
