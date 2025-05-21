@@ -1,5 +1,6 @@
 package com.example.demo.servicesImpl;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -70,19 +71,18 @@ public class CitaServiceImpl implements CitaService {
 		citas.setCentroDeSalud(centro);
 		citas.setFecha(cita.getFecha());
 		citas.setEstado("PENDIENTE");
-		
 
 		citaRepository.save(citas);
 
 	}
 
+	
 	@Override
 	public List<Cita> historialCita(Long id) {
 
 		return citaRepository.findAll().stream().filter(cita -> cita.getPaciente().getId().equals(id))
 				.collect(Collectors.toList());
 	}
-
 
 	@Override
 	public Cita buscarCitaPorId(Long id) {

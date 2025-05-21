@@ -36,9 +36,9 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	@Autowired
 	@Qualifier("CitaRepository")
 	private CitaRepository citaRepository;
-	
+
 	@Autowired
-    private JavaMailSender mailSender;
+	private JavaMailSender mailSender;
 
 	@Override
 	public HorarioMedico crearHorarioMedico(HorarioMedico horarioMedico) {
@@ -56,89 +56,58 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 		return horarioMedicoRepository.findByMedico_Id(medicoId);
 	}
 
-	@Override
-    public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
-        
-        HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
+	public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
 
-        if (horarioMedico.getDia() != null) {
-            horarioExistente.setDia(horarioMedico.getDia());
-        }
-        if (horarioMedico.getHoraInicio() != null) {
-            horarioExistente.setHoraInicio(horarioMedico.getHoraInicio());
-        }
-        if (horarioMedico.getHoraFin() != null) {
-            horarioExistente.setHoraFin(horarioMedico.getHoraFin());
-        }
+		HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
 
-        HorarioMedico actualizado = horarioMedicoRepository.save(horarioExistente);
+		if (horarioMedico.getDia() != null)
+			horarioExistente.setDia(horarioMedico.getDia());
+		if (horarioMedico.getHoraInicio() != null)
+			horarioExistente.setHoraInicio(horarioMedico.getHoraInicio());
+		if (horarioMedico.getHoraFin() != null)
+			horarioExistente.setHoraFin(horarioMedico.getHoraFin());
 
-        
-        LocalDate dia   = horarioExistente.getDia();
-        LocalTime inicio = horarioExistente.getHoraInicio();
-        LocalTime fin    = horarioExistente.getHoraFin();
-        LocalDateTime desde = LocalDateTime.of(dia, inicio);
-        LocalDateTime hasta = LocalDateTime.of(dia, fin);
-        
+		HorarioMedico actualizado = horarioMedicoRepository.save(horarioExistente);
 
-        List<Cita> citasAfectadas = citaRepository
-            .findByMedico_IdAndFechaBetween(horarioExistente.getMedico().getId(), desde, hasta)
-            .stream()
-            .filter(c -> "PENDIENTE".equalsIgnoreCase(c.getEstado()))
-            .toList();
+		LocalDate dia = horarioExistente.getDia();
+		LocalDateTime desde = dia.atStartOfDay();
+		LocalDateTime hasta = dia.atTime(23, 59, 59);
 
-        
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        for (Cita cita : citasAfectadas) {
-            StringBuilder mensajeEmail = new StringBuilder("Su cita ha sido modificada: ");
-            boolean modificacionRealizada = false;
+		List<Cita> citasAfectadas = citaRepository
+				.findByMedico_IdAndFechaBetween(horarioExistente.getMedico().getId(), desde, hasta).stream()
+				.filter(c -> "PENDIENTE".equalsIgnoreCase(c.getEstado())).toList();
 
-            
-            if (horarioMedico.getDia() != null) {
-                mensajeEmail
-                    .append("Nuevo día: ")
-                    .append(horarioExistente.getDia().toString())
-                    .append(". ");
-                modificacionRealizada = true;
-            }
-            if (horarioMedico.getHoraInicio() != null) {
-                mensajeEmail
-                    .append("Nueva hora inicio: ")
-                    .append(horarioExistente.getHoraInicio().format(fmt))
-                    .append(". ");
-                modificacionRealizada = true;
-            }
-            if (horarioMedico.getHoraFin() != null) {
-                mensajeEmail
-                    .append("Nueva hora fin: ")
-                    .append(horarioExistente.getHoraFin().format(fmt))
-                    .append(". ");
-                modificacionRealizada = true;
-            }
+		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-            if (!modificacionRealizada) {
-                throw new RuntimeException("No se proporcionó información nueva para actualizar el horario.");
-            }
+		for (Cita cita : citasAfectadas) {
+			LocalDateTime oldFecha = cita.getFecha();
+			LocalTime t = oldFecha.toLocalTime();
+			LocalDateTime nuevaFecha = oldFecha;
 
-            
-            String nombreMedico = cita.getMedico().getNombre() + " " + cita.getMedico().getApellidos();
+			if (t.isBefore(horarioExistente.getHoraInicio()))
+				nuevaFecha = LocalDateTime.of(dia, horarioExistente.getHoraInicio());
+			else if (t.isAfter(horarioExistente.getHoraFin()))
+				nuevaFecha = LocalDateTime.of(dia, horarioExistente.getHoraFin());
 
-            
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(cita.getPaciente().getEmail());
-            message.setSubject("Cita modificada");
-            message.setText(
-                mensajeEmail
-                    .append("Con el médico: ")
-                    .append(nombreMedico)
-                    .toString()
-            );
-            mailSender.send(message);
-        }
+			if (!nuevaFecha.equals(oldFecha)) {
+				cita.setFecha(nuevaFecha);
+				citaRepository.save(cita);
+			}
 
-        return actualizado;
-    }
+			StringBuilder mensajeEmail = new StringBuilder("Su cita ha sido modificada: ");
+			mensajeEmail.append("Nueva fecha: ").append(nuevaFecha.format(fmt)).append(". Con el médico: ")
+					.append(cita.getMedico().getNombre()).append(" ").append(cita.getMedico().getApellidos());
+
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setTo(cita.getPaciente().getEmail());
+			message.setSubject("Cita modificada");
+			message.setText(mensajeEmail.toString());
+			mailSender.send(message);
+		}
+
+		return actualizado;
+	}
 
 	@Override
 	public void eliminarHorario(Long id) {
