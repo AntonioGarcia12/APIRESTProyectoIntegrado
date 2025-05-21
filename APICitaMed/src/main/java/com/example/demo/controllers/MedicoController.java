@@ -180,11 +180,7 @@ public class MedicoController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
 		}
 
-		if (existingCita.getPaciente() == null
-				|| !existingCita.getPaciente().getId().equals(pacienteAutenticado.getId())) {
-			respuesta.put("mensaje", "No tiene permiso para editar esta cita, pertenece a otro paciente.");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
-		}
+		
 
 		cita.setId(id);
 		citaService.editarCita(cita);
