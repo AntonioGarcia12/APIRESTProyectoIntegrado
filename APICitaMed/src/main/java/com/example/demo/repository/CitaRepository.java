@@ -22,9 +22,7 @@ public interface CitaRepository extends JpaRepository<Cita, Serializable> {
 	List<Cita> findByMedico_IdAndEstadoNot(Long medicoId, String estado);
 	
 	List<Cita> findByMedico_IdAndFechaBetween(
-		    Long idMedico,
-		    LocalDateTime desde,
-		    LocalDateTime hasta
-		);
-
+	        Long idMedico,
+	        LocalDateTime desde,
+	        LocalDateTime hasta);
 }

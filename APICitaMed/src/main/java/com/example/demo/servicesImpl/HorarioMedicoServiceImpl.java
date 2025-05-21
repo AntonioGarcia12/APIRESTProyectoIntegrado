@@ -2,6 +2,7 @@ package com.example.demo.servicesImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,7 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 
 	@Override
     public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
-        // 1. Recuperar y actualizar el horario
+        
         HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
 
@@ -74,9 +75,12 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
         HorarioMedico actualizado = horarioMedicoRepository.save(horarioExistente);
 
         
-        LocalDate dia = horarioExistente.getDia();
-        LocalDateTime desde = dia.atStartOfDay();
-        LocalDateTime hasta = dia.atTime(23, 59, 59);
+        LocalDate dia   = horarioExistente.getDia();
+        LocalTime inicio = horarioExistente.getHoraInicio();
+        LocalTime fin    = horarioExistente.getHoraFin();
+        LocalDateTime desde = LocalDateTime.of(dia, inicio);
+        LocalDateTime hasta = LocalDateTime.of(dia, fin);
+        
 
         List<Cita> citasAfectadas = citaRepository
             .findByMedico_IdAndFechaBetween(horarioExistente.getMedico().getId(), desde, hasta)
@@ -113,9 +117,9 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
                 modificacionRealizada = true;
             }
 
-            if (!modificacionRealizada)
+            if (!modificacionRealizada) {
                 throw new RuntimeException("No se proporcionó información nueva para actualizar el horario.");
-            
+            }
 
             
             String nombreMedico = cita.getMedico().getNombre() + " " + cita.getMedico().getApellidos();
