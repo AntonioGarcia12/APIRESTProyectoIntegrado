@@ -1,17 +1,13 @@
 package com.example.demo.servicesImpl;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Cita;
@@ -37,8 +33,6 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	@Qualifier("CitaRepository")
 	private CitaRepository citaRepository;
 
-	@Autowired
-	private JavaMailSender mailSender;
 
 	@Override
 	public HorarioMedico crearHorarioMedico(HorarioMedico horarioMedico) {
@@ -57,45 +51,21 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	}
 
 	@Override
-	public HorarioMedico editarHorario(Long horarioId, HorarioMedico dto, Long citaId) {
-		HorarioMedico h = horarioMedicoRepository.findById(horarioId)
-				.orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + horarioId));
+	public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
 
-		if (dto.getDia() != null)
-			h.setDia(dto.getDia());
-		if (dto.getHoraInicio() != null)
-			h.setHoraInicio(dto.getHoraInicio());
-		if (dto.getHoraFin() != null)
-			h.setHoraFin(dto.getHoraFin());
+		HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
 
-		h = horarioMedicoRepository.save(h);
+		if (horarioMedico.getDia() != null)
+			horarioExistente.setDia(horarioMedico.getDia());
 
-		if (citaId != null) {
-			Cita cita = citaRepository.findById(citaId)
-					.orElseThrow(() -> new RuntimeException("Cita no encontrada con id: " + citaId));
+		if (horarioMedico.getHoraInicio() != null)
+			horarioExistente.setHoraInicio(horarioMedico.getHoraInicio());
 
-			if (!cita.getMedico().getId().equals(h.getMedico().getId())
-					|| !cita.getFecha().toLocalDate().equals(h.getDia())) {
-				throw new RuntimeException("La cita no corresponde al mismo médico o día");
-			}
+		if (horarioMedico.getHoraFin() != null)
+			horarioExistente.setHoraFin(horarioMedico.getHoraFin());
 
-			LocalDateTime nuevaFecha = LocalDateTime.of(h.getDia(), h.getHoraInicio());
-			cita.setFecha(nuevaFecha);
-			citaRepository.save(cita);
-
-			DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-			StringBuilder msg = new StringBuilder("Su cita ha sido modificada: ").append("Nueva fecha: ")
-					.append(nuevaFecha.format(fmt)).append(". ").append("Con el médico: ")
-					.append(cita.getMedico().getNombre()).append(" ").append(cita.getMedico().getApellidos());
-
-			SimpleMailMessage mail = new SimpleMailMessage();
-			mail.setTo(cita.getPaciente().getEmail());
-			mail.setSubject("Cita modificada");
-			mail.setText(msg.toString());
-			mailSender.send(mail);
-		}
-
-		return h;
+		return horarioMedicoRepository.save(horarioExistente);
 	}
 
 	@Override
