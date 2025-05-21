@@ -2,7 +2,6 @@ package com.example.demo.servicesImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
@@ -75,12 +74,9 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
         HorarioMedico actualizado = horarioMedicoRepository.save(horarioExistente);
 
         
-        LocalDate dia   = horarioExistente.getDia();
-        LocalTime inicio = horarioExistente.getHoraInicio();
-        LocalTime fin    = horarioExistente.getHoraFin();
-        LocalDateTime desde = LocalDateTime.of(dia, inicio);
-        LocalDateTime hasta = LocalDateTime.of(dia, fin);
-        
+        LocalDate dia = horarioExistente.getDia();
+        LocalDateTime desde = dia.atStartOfDay();
+        LocalDateTime hasta = dia.atTime(23, 59, 59);
 
         List<Cita> citasAfectadas = citaRepository
             .findByMedico_IdAndFechaBetween(horarioExistente.getMedico().getId(), desde, hasta)
