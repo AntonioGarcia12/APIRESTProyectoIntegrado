@@ -1,6 +1,5 @@
 package com.example.demo.servicesImpl;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +47,6 @@ public class CitaServiceImpl implements CitaService {
 
 	@Override
 	public void crearCita(CitaDTO cita, Long idPaciente) {
-
 		Medico medico = medicoRepository.findById(cita.getIdMedico())
 				.orElseThrow(() -> new RuntimeException("Médico no encontrado con id: " + cita.getIdMedico()));
 
@@ -58,25 +56,31 @@ public class CitaServiceImpl implements CitaService {
 		Usuario paciente = usuarioRepository.findById(idPaciente)
 				.orElseThrow(() -> new RuntimeException("Paciente no encontrado con id: " + idPaciente));
 
+		DateTimeFormatter fechaFmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+		String titulo = "con el médico";
+		if ("Mujer".equalsIgnoreCase(paciente.getSexo()))
+			titulo = "con la doctora";
+
+		StringBuilder texto = new StringBuilder("Ha reservado una cita para la fecha: ");
+		texto.append(cita.getFecha().format(fechaFmt)).append(" ").append(titulo).append(" ").append(medico.getNombre())
+				.append(" ").append(medico.getApellidos());
+
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(paciente.getEmail());
 		message.setSubject("Reserva de cita exitosa");
-		message.setText("Ha reservado una cita para la fecha: " + cita.getFecha().toString() + " con el médico "
-				+ medico.getNombre() + " " + medico.getApellidos());
+		message.setText(texto.toString());
 		mailSender.send(message);
 
-		Cita citas = new Cita();
-		citas.setMedico(medico);
-		citas.setPaciente(paciente);
-		citas.setCentroDeSalud(centro);
-		citas.setFecha(cita.getFecha());
-		citas.setEstado("PENDIENTE");
-
-		citaRepository.save(citas);
-
+		Cita nueva = new Cita();
+		nueva.setMedico(medico);
+		nueva.setPaciente(paciente);
+		nueva.setCentroDeSalud(centro);
+		nueva.setFecha(cita.getFecha());
+		nueva.setEstado("PENDIENTE");
+		citaRepository.save(nueva);
 	}
 
-	
 	@Override
 	public List<Cita> historialCita(Long id) {
 

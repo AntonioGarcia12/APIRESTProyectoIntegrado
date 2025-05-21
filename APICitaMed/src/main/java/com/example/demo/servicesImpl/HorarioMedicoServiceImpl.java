@@ -96,8 +96,13 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 			}
 
 			StringBuilder mensajeEmail = new StringBuilder("Su cita ha sido modificada: ");
-			mensajeEmail.append("Nueva fecha: ").append(nuevaFecha.format(fmt)).append(". Con el médico: ")
-					.append(cita.getMedico().getNombre()).append(" ").append(cita.getMedico().getApellidos());
+			if(cita.getMedico().getSexo().equals("Mujer")) {
+				mensajeEmail.append("Nueva fecha: ").append(nuevaFecha.format(fmt)).append(". Con la doctora: ")
+				.append(cita.getMedico().getNombre()).append(" ").append(cita.getMedico().getApellidos());
+			}else {
+				mensajeEmail.append("Nueva fecha: ").append(nuevaFecha.format(fmt)).append(". Con el doctor: ")
+				.append(cita.getMedico().getNombre()).append(" ").append(cita.getMedico().getApellidos());
+			}
 
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setTo(cita.getPaciente().getEmail());
