@@ -10,7 +10,7 @@ public interface CitaService {
 
 	void crearCita(CitaDTO cita, Long idPaciente);
 	
-	void editarCita(Cita cita);
+	Cita editarCita(Cita cita);
 
 	List<Cita> historialCita(Long id);
 

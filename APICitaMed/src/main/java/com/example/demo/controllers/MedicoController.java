@@ -183,9 +183,7 @@ public class MedicoController {
 		
 
 		cita.setId(id);
-		citaService.editarCita(cita);
-
-		Cita cita2 = new Cita(cita.getFecha());
+		Cita cita2 =citaService.editarCita(cita);
 
 		respuesta.put("data", cita2);
 		respuesta.put("mensaje", "Cita actualizada correctamente");

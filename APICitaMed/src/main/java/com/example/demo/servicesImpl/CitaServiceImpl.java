@@ -82,17 +82,19 @@ public class CitaServiceImpl implements CitaService {
 	}
 
 	@Override
-	public void editarCita(Cita cita) {
+	public Cita editarCita(Cita cita) {
 
 		Cita citaExistente = citaRepository.findById(cita.getId())
 				.orElseThrow(() -> new RuntimeException("Cita no encontrada con id: " + cita.getId()));
+		
+		DateTimeFormatter fechaFmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
 		StringBuilder mensajeEmail = new StringBuilder("Su cita ha sido modificada: ");
 		boolean modificacionRealizada = false;
 
 		if (cita.getFecha() != null) {
 			citaExistente.setFecha(cita.getFecha());
-			mensajeEmail.append("Nueva fecha: ").append(cita.getFecha().toString()).append(". ");
+			mensajeEmail.append("Nueva fecha: ").append(cita.getFecha().format(fechaFmt)).append(". ");
 			modificacionRealizada = true;
 		}
 
@@ -115,6 +117,8 @@ public class CitaServiceImpl implements CitaService {
 			message.setText(mensajeEmail.append("Con el doctor: ").append(nombreMedico).toString());
 
 		mailSender.send(message);
+		
+		return citaRepository.save(citaExistente);
 
 	}
 
