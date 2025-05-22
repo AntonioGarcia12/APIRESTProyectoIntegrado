@@ -56,7 +56,7 @@ public class CitaServiceImpl implements CitaService {
 		Usuario paciente = usuarioRepository.findById(idPaciente)
 				.orElseThrow(() -> new RuntimeException("Paciente no encontrado con id: " + idPaciente));
 
-		DateTimeFormatter fechaFmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter fechaFmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
 		String titulo = "con el médico";
 		if ("Mujer".equalsIgnoreCase(medico.getSexo()))
