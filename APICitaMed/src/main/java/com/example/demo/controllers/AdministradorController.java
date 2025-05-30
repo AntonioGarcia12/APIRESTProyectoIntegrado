@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +58,7 @@ public class AdministradorController {
 	private CitaService citaService;
 
 	@PostMapping("/registrarMedico")
-	public ResponseEntity<?> registrarMedico(Medico medico, @RequestParam(required=false) MultipartFile archivo,
+	public ResponseEntity<?> registrarMedico(Medico medico, @RequestParam(required = false) MultipartFile archivo,
 			@RequestParam Long centroDeSaludId) {
 
 		Map<String, Object> respuesta = new HashMap<>();
@@ -81,7 +84,7 @@ public class AdministradorController {
 		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
 				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(), medico.getActivo(),
 				medico.getTelefono(), medico.getEmail(), medico.getDireccion(), medico.getSexo(),
-				medico.getEspecialidad(), medico.getImagen(), null, medico.getRol(),medico.getCentroDeSalud());
+				medico.getEspecialidad(), medico.getImagen(), null, medico.getRol(), medico.getCentroDeSalud());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Registro exitoso");
@@ -145,7 +148,8 @@ public class AdministradorController {
 	}
 
 	@PostMapping("/registrarCentro")
-	public ResponseEntity<?> registrarCentro(CentroDeSalud centroDeSalud, @RequestParam(required=false) MultipartFile archivo) {
+	public ResponseEntity<?> registrarCentro(CentroDeSalud centroDeSalud,
+			@RequestParam(required = false) MultipartFile archivo) {
 
 		Map<String, Object> respuesta = new HashMap<>();
 
@@ -180,8 +184,8 @@ public class AdministradorController {
 	public ResponseEntity<?> borrarCentro(@PathVariable Long id) {
 
 		Map<String, Object> respuesta = new HashMap<>();
-		
-		if(medicoService.existeMedicoCentroDeSalud(id)) {
+
+		if (medicoService.existeMedicoCentroDeSalud(id)) {
 			respuesta.put("mensaje", "No se puede eliminar: hay médicos asignados");
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
 		}
@@ -232,26 +236,18 @@ public class AdministradorController {
 	}
 
 	@GetMapping("/citasPorMes/{medicoId}")
-	public ResponseEntity<?> citasPorMes(
-            @PathVariable Long medicoId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+	public ResponseEntity<?> graficaCitas(@PathVariable Long medicoId,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime desde,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta,
+			@AuthenticationPrincipal UserDetails userDetails) {
 
-        Map<String, Object> respuesta = new HashMap<>();
-        Map<Integer, Long> datos = citaService.citasPorMes(medicoId, startDate, endDate);
+		Medico medicoAut = medicoService.buscarPorEmail(userDetails.getUsername());
+		if (medicoAut == null || !medicoAut.getId().equals(medicoId))
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("mensaje", "Sin permiso"));
 
-        if (datos.isEmpty()) {
-            respuesta.put("mensaje", "No hay citas para el médico " + medicoId +
-                                     " entre " + startDate + " y " + endDate);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-        }
+		Map<LocalDate, Long> datos = citaService.citasPorMes(medicoId, desde, hasta);
 
-        respuesta.put("data", datos);
-        respuesta.put("mensaje", "Número de citas por mes para el médico " + medicoId);
-        return ResponseEntity.ok(respuesta);
-    }
-
-
-	
+		return ResponseEntity.ok(Map.of("data", datos, "mensaje", "Datos de la gráfica obtenidos"));
+	}
 
 }
