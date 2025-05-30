@@ -238,12 +238,9 @@ public class AdministradorController {
 	@GetMapping("/citasPorMes/{medicoId}")
 	public ResponseEntity<?> graficaCitas(@PathVariable Long medicoId,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime desde,
-			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta,
-			@AuthenticationPrincipal UserDetails userDetails) {
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta) {
 
-		Medico medicoAut = medicoService.buscarPorEmail(userDetails.getUsername());
-		if (medicoAut == null || !medicoAut.getId().equals(medicoId))
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("mensaje", "Sin permiso"));
+		
 
 		Map<LocalDate, Long> datos = citaService.citasPorMes(medicoId, desde, hasta);
 
