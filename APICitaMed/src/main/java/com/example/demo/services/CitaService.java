@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public interface CitaService {
 
 	void cancelarCita(Long id, Long idPaciente);
 
-	Map<Integer, Long> citasPorMes();
+	Map<Integer, Long> citasPorMes(Long medicoId, LocalDate startDate, LocalDate endDate);
 
 	void actualizarCitaPorMedico(Long idCita, String estado);
 

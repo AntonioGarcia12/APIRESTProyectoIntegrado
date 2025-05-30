@@ -1,5 +1,6 @@
 package com.example.demo.servicesImpl;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -155,17 +156,18 @@ public class CitaServiceImpl implements CitaService {
 
 	}
 
-	@Override
-	public Map<Integer, Long> citasPorMes() {
-		List<Object[]> resultados = citaRepository.countCitasPorMes();
-		Map<Integer, Long> citasPorMes = new HashMap<>();
-		for (Object[] resultado : resultados) {
-			Integer mes = (Integer) resultado[0];
-			Long total = (Long) resultado[1];
-			citasPorMes.put(mes, total);
-		}
-		return citasPorMes;
-	}
+	  @Override
+	    public Map<Integer, Long> citasPorMes(Long medicoId, LocalDate startDate, LocalDate endDate) {
+	        List<Object[]> resultados = citaRepository
+	            .countCitasPorMesByMedicoAndFecha(medicoId, startDate, endDate);
+	        Map<Integer, Long> citasPorMes = new HashMap<>();
+	        for (Object[] fila : resultados) {
+	            Integer mes   = (Integer) fila[0];
+	            Long total    = (Long)    fila[1];
+	            citasPorMes.put(mes, total);
+	        }
+	        return citasPorMes;
+	    }
 
 	@Override
 	public void actualizarCitaPorMedico(Long idCita, String estado) {

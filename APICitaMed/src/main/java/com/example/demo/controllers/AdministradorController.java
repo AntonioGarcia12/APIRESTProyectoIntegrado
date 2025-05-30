@@ -1,11 +1,12 @@
 package com.example.demo.controllers;
 
+import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -230,23 +231,26 @@ public class AdministradorController {
 		return ResponseEntity.ok(respuesta);
 	}
 
-	@GetMapping("/citasPorMes")
-	public ResponseEntity<?> citasPorMes() {
-		Map<String, Object> respuesta = new HashMap<>();
+	@GetMapping("/citasPorMes/{medicoId}")
+	public ResponseEntity<?> citasPorMes(
+            @PathVariable Long medicoId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
-		Map<Integer, Long> datos = citaService.citasPorMes();
+        Map<String, Object> respuesta = new HashMap<>();
+        Map<Integer, Long> datos = citaService.citasPorMes(medicoId, startDate, endDate);
 
-		if (datos.isEmpty()) {
-			respuesta.put("mensaje", "No hay citas");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-		}
+        if (datos.isEmpty()) {
+            respuesta.put("mensaje", "No hay citas para el médico " + medicoId +
+                                     " entre " + startDate + " y " + endDate);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+        }
 
-		respuesta.put("data", datos);
-		respuesta.put("mensaje", "Número de citas por mes");
+        respuesta.put("data", datos);
+        respuesta.put("mensaje", "Número de citas por mes para el médico " + medicoId);
+        return ResponseEntity.ok(respuesta);
+    }
 
-		return ResponseEntity.ok(respuesta);
-
-	}
 
 	
 
