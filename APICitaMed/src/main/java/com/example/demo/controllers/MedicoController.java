@@ -140,7 +140,7 @@ public class MedicoController {
 	@GetMapping("/horarios/{medicoId}")
     public ResponseEntity<?> obtenerDisponibilidadHoy(@PathVariable Long medicoId) {
         Map<String, Object> respuesta = new HashMap<>();
-        List<HorarioMedico> disponibles = horarioMedicoService.obtenerDisponibilidadParaPaciente(medicoId);
+        List<HorarioMedico> disponibles = horarioMedicoService.obtenerHorariosPredefinidos(medicoId);
 
         if (disponibles.isEmpty()) {
             respuesta.put("mensaje", "No hay bloques disponibles para el médico con id " + medicoId + " hoy");
