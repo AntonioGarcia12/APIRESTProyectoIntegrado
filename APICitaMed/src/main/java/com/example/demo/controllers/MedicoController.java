@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -266,4 +267,6 @@ public class MedicoController {
 		respuesta.put("mensaje", "Pacientes obtenidos correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
+	
+
 }

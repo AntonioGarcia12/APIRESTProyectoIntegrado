@@ -31,8 +31,7 @@ public class HorarioSlots {
         new Slot(LocalTime.of(11, 0), LocalTime.of(12, 0)),
         new Slot(LocalTime.of(12, 0), LocalTime.of(13, 0)),
         new Slot(LocalTime.of(13, 0), LocalTime.of(14, 0)),
-        new Slot(LocalTime.of(14, 0), LocalTime.of(15, 0)),
-        new Slot(LocalTime.of(19, 0), LocalTime.of(20, 0))
+        new Slot(LocalTime.of(14, 0), LocalTime.of(15, 0))
     );
 
     private HorarioSlots() {
