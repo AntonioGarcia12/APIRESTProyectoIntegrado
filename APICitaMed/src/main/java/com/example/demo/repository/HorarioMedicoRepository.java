@@ -13,4 +13,6 @@ public interface HorarioMedicoRepository extends JpaRepository<HorarioMedico, Se
 
 	
 	List<HorarioMedico> findByMedico_Id(Long idMedico);
+	
+	
 }

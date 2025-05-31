@@ -1,12 +1,11 @@
 package com.example.demo.services;
 
+
 import java.util.List;
 
 import com.example.demo.entity.HorarioMedico;
 
 public interface HorarioMedicoService {
-
-	HorarioMedico crearHorarioMedico(HorarioMedico horarioMedico);
 
 	List<HorarioMedico> obtenerHorarioMedico(Long id);
 
@@ -17,4 +16,8 @@ public interface HorarioMedicoService {
 	HorarioMedico obtenerHorarioMedicoPorId(Long id);
 	
 	List<HorarioMedico> obtenerDisponibilidadParaPaciente(Long id);
+	
+	List<HorarioMedico> obtenerHorariosPredefinidos(Long medicoId);
+	
+	
 	}

@@ -1,6 +1,6 @@
 package com.example.demo.servicesImpl;
 
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +17,7 @@ import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.HorarioMedicoRepository;
 import com.example.demo.repository.MedicoRepository;
 import com.example.demo.services.HorarioMedicoService;
+import com.example.demo.util.HorarioSlots;
 
 @Service("HorarioMedicoService")
 public class HorarioMedicoServiceImpl implements HorarioMedicoService {
@@ -32,18 +33,6 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	@Autowired
 	@Qualifier("CitaRepository")
 	private CitaRepository citaRepository;
-
-
-	@Override
-	public HorarioMedico crearHorarioMedico(HorarioMedico horarioMedico) {
-
-		Long id = horarioMedico.getMedico().getId();
-		Medico medico = medicoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Médico no encontrado con id: " + id));
-		horarioMedico.setMedico(medico);
-
-		return horarioMedicoRepository.save(horarioMedico);
-	}
 
 	@Override
 	public List<HorarioMedico> obtenerHorarioMedico(Long medicoId) {
@@ -81,14 +70,37 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	}
 
 	@Override
-	public List<HorarioMedico> obtenerDisponibilidadParaPaciente(Long id) {
-		List<Cita> citas = citaRepository.findByMedico_IdAndEstadoNot(id, "CANCELADA");
+	public List<HorarioMedico> obtenerHorariosPredefinidos(Long medicoId) {
 
-		Set<LocalDateTime> ocupadas = citas.stream().map(Cita::getFecha).collect(Collectors.toSet());
+		Medico medico = medicoRepository.findById(medicoId)
+				.orElseThrow(() -> new RuntimeException("Médico no encontrado con id: " + medicoId));
 
-		return horarioMedicoRepository.findByMedico_Id(id).stream().filter(h -> {
-			LocalDateTime inicio = LocalDateTime.of(h.getDia(), h.getHoraInicio());
-			return !ocupadas.contains(inicio);
+		LocalDate hoy = LocalDate.now();
+		return HorarioSlots.SLOTS_FRIOS.stream().map(slot -> {
+			HorarioMedico h = new HorarioMedico();
+			h.setMedico(medico);
+			h.setDia(hoy);
+			h.setHoraInicio(slot.getInicio());
+			h.setHoraFin(slot.getFin());
+			return h;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<HorarioMedico> obtenerDisponibilidadParaPaciente(Long medicoId) {
+		List<HorarioMedico> todosLosHorarios = obtenerHorariosPredefinidos(medicoId);
+		LocalDate hoy = LocalDate.now();
+		LocalDateTime inicioDelDia = hoy.atStartOfDay();
+		LocalDateTime finDelDia = hoy.atTime(23, 59, 59);
+
+		List<Cita> citasDelDia = citaRepository.findByMedico_IdAndEstadoNotAndFechaBetween(medicoId, "CANCELADA",
+				inicioDelDia, finDelDia);
+
+		Set<LocalDateTime> horasOcupadas = citasDelDia.stream().map(Cita::getFecha).collect(Collectors.toSet());
+
+		return todosLosHorarios.stream().filter(h -> {
+			LocalDateTime inicioBloque = LocalDateTime.of(h.getDia(), h.getHoraInicio());
+			return !horasOcupadas.contains(inicioBloque);
 		}).collect(Collectors.toList());
 	}
 }

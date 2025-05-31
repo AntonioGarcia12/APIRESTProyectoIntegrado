@@ -137,15 +137,20 @@ public class MedicoController {
 
 	}
 
-	@PostMapping("/crearHorario")
-	public ResponseEntity<?> configurarHorario(@RequestBody HorarioMedico horarioMedico) {
-		Map<String, Object> respuesta = new HashMap<>();
+	@GetMapping("/horarios/{medicoId}")
+    public ResponseEntity<?> obtenerDisponibilidadHoy(@PathVariable Long medicoId) {
+        Map<String, Object> respuesta = new HashMap<>();
+        List<HorarioMedico> disponibles = horarioMedicoService.obtenerDisponibilidadParaPaciente(medicoId);
 
-		HorarioMedico horario = horarioMedicoService.crearHorarioMedico(horarioMedico);
-		respuesta.put("data", horario);
-		respuesta.put("mensaje", "Horario creado correctamente");
-		return ResponseEntity.ok(respuesta);
-	}
+        if (disponibles.isEmpty()) {
+            respuesta.put("mensaje", "No hay bloques disponibles para el médico con id " + medicoId + " hoy");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+        }
+
+        respuesta.put("data", disponibles);
+        respuesta.put("mensaje", "Bloques disponibles de hoy obtenidos correctamente");
+        return ResponseEntity.ok(respuesta);
+    }
 
 	@PutMapping("/editarHorario/{id}")
 	public ResponseEntity<?> editarHorario(@PathVariable Long id, @RequestBody HorarioMedico horarioMedico) {
