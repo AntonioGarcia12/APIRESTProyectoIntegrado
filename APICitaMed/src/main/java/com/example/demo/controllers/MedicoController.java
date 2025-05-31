@@ -85,19 +85,20 @@ public class MedicoController {
 		return ResponseEntity.ok(respuesta);
 
 	}
-	
+
 	@DeleteMapping("/borrarHistorialMedico/{id}")
-	public ResponseEntity<?> borrarHistorialMedico(@PathVariable Long id){
+	public ResponseEntity<?> borrarHistorialMedico(@PathVariable Long id) {
 		Map<String, Object> respuesta = new HashMap<>();
-		
+
 		historialMedicoService.borrarHistorialMedico(id);
 		respuesta.put("mensaje", "Historial eliminado correctamente");
 
 		return ResponseEntity.ok(respuesta);
 	}
-	
+
 	@PutMapping("/editarHistorialMedico/{id}")
-	public ResponseEntity<?> editarHistorialMedico(@PathVariable Long id, @RequestBody HistorialMedico historialMedico) {
+	public ResponseEntity<?> editarHistorialMedico(@PathVariable Long id,
+			@RequestBody HistorialMedico historialMedico) {
 		Map<String, Object> respuesta = new HashMap<>();
 
 		HistorialMedico historialActualizado = historialMedicoService.editarHistorialMedico(id, historialMedico);
@@ -106,15 +107,13 @@ public class MedicoController {
 		return ResponseEntity.ok(respuesta);
 
 	}
-	
-	
-	
+
 	@GetMapping("/historiales")
-	public ResponseEntity<?> obtenerHistorialesMedicos(){
+	public ResponseEntity<?> obtenerHistorialesMedicos() {
 		Map<String, Object> respuesta = new HashMap<>();
-		
+
 		List<HistorialMedico> historiales = historialMedicoService.listarHistorialesMedicos();
-		
+
 		if (historiales.isEmpty()) {
 			respuesta.put("mensaje", "No hay historiales médicos");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
@@ -124,9 +123,7 @@ public class MedicoController {
 		respuesta.put("mensaje", "Historiales obtenidos");
 		return ResponseEntity.ok(respuesta);
 	}
-	
-	
-	
+
 	@PutMapping("/actualizarEstadoCita/{idCita}")
 	public ResponseEntity<?> actualizarEstadoCitaPorMedico(@PathVariable Long idCita, @RequestParam String estado) {
 		Map<String, Object> respuesta = new HashMap<>();
@@ -137,22 +134,6 @@ public class MedicoController {
 
 	}
 
-	@GetMapping("/horarios/{medicoId}")
-    public ResponseEntity<?> obtenerDisponibilidadHoy(@PathVariable Long medicoId) {
-        Map<String, Object> respuesta = new HashMap<>();
-        List<HorarioMedico> disponibles = horarioMedicoService.obtenerHorariosPredefinidos(medicoId);
-
-        if (disponibles.isEmpty()) {
-            respuesta.put("mensaje", "No hay bloques disponibles para el médico con id " + medicoId + " hoy");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-        }
-
-        respuesta.put("data", disponibles);
-        respuesta.put("mensaje", "Bloques disponibles de hoy obtenidos correctamente");
-        return ResponseEntity.ok(respuesta);
-    }
-
-	
 	@PutMapping("/editarCita/{id}")
 	public ResponseEntity<?> editarCita(@RequestBody Cita cita, @PathVariable Long id,
 			@AuthenticationPrincipal UserDetails userDetails) {
@@ -175,54 +156,45 @@ public class MedicoController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
 		}
 
-		
-
 		cita.setId(id);
-		Cita cita2 =citaService.editarCita(cita);
+		Cita cita2 = citaService.editarCita(cita);
 
 		respuesta.put("data", cita2);
 		respuesta.put("mensaje", "Cita actualizada correctamente");
 		return ResponseEntity.ok(respuesta);
 
 	}
-	
+
 	@GetMapping("/citas/{id}")
-	public ResponseEntity<?> obtenerCitaPorId(
-	        @PathVariable Long id,
-	        @AuthenticationPrincipal UserDetails userDetails) {
+	public ResponseEntity<?> obtenerCitaPorId(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
 
-	    Map<String,Object> respuesta = new HashMap<>();
+		Map<String, Object> respuesta = new HashMap<>();
 
-	    
-	    if (userDetails == null) {
-	        respuesta.put("mensaje", "No hay usuario autenticado o token inválido.");
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
-	    }
+		if (userDetails == null) {
+			respuesta.put("mensaje", "No hay usuario autenticado o token inválido.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
 
-	    
-	    Medico medicoAutenticado = medicoService.buscarPorEmail(userDetails.getUsername());
-	    if (medicoAutenticado == null) {
-	        respuesta.put("mensaje", "Médico no encontrado en la base de datos.");
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
-	    }
+		Medico medicoAutenticado = medicoService.buscarPorEmail(userDetails.getUsername());
+		if (medicoAutenticado == null) {
+			respuesta.put("mensaje", "Médico no encontrado en la base de datos.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
 
-	    
-	    Cita cita = citaService.buscarCitaPorId(id);
-	    if (cita == null) {
-	        respuesta.put("mensaje", "Cita no encontrada.");
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-	    }
+		Cita cita = citaService.buscarCitaPorId(id);
+		if (cita == null) {
+			respuesta.put("mensaje", "Cita no encontrada.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+		}
 
-	    
-	    if (!cita.getMedico().getId().equals(medicoAutenticado.getId())) {
-	        respuesta.put("mensaje", "No tiene permiso para ver esta cita.");
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
-	    }
+		if (!cita.getMedico().getId().equals(medicoAutenticado.getId())) {
+			respuesta.put("mensaje", "No tiene permiso para ver esta cita.");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
+		}
 
-	    
-	    respuesta.put("data", cita);
-	    respuesta.put("mensaje", "Cita obtenida correctamente");
-	    return ResponseEntity.ok(respuesta);
+		respuesta.put("data", cita);
+		respuesta.put("mensaje", "Cita obtenida correctamente");
+		return ResponseEntity.ok(respuesta);
 	}
 
 	@GetMapping("/listadoCitas")
@@ -246,7 +218,7 @@ public class MedicoController {
 
 		return ResponseEntity.ok(respuesta);
 	}
-	
+
 	@GetMapping("/listarMedico/{id}")
 	public ResponseEntity<?> listarUnMedico(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
 		Map<String, Object> respuesta = new HashMap<>();
@@ -274,44 +246,15 @@ public class MedicoController {
 		}
 
 		AuthResponseDTO response = new AuthResponseDTO(medico.getId(), medico.getNombre(), medico.getApellidos(),
-				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(),
-				medico.getActivo(), medico.getTelefono(), medico.getEmail(), medico.getDireccion(),
-				medico.getSexo(), medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
+				medico.getDni(), medico.getNumeroSeguridadSocial(), medico.getFechaNacimiento(), medico.getActivo(),
+				medico.getTelefono(), medico.getEmail(), medico.getDireccion(), medico.getSexo(),
+				medico.getEspecialidad(), medico.getImagen(), null, medico.getRol());
 
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Médico obtenido correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
-	
-	@GetMapping("/horarios/{id}")
-	public ResponseEntity<?> obtenerDisponibilidad(@PathVariable Long id) {
 
-		Map<String, Object> respuesta = new HashMap<>();
-
-		List<HorarioMedico> disponibilidad = horarioMedicoService.obtenerHorarioMedico(id);
-
-		if (disponibilidad.isEmpty()) {
-			respuesta.put("mensaje", "No hay horarios");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
-		}
-
-		respuesta.put("data", disponibilidad);
-		respuesta.put("mensaje", "Horarios obtenidos correctamente");
-		return ResponseEntity.ok(respuesta);
-	}
-	
-	@GetMapping("/obtenerHorarioPorId/{id}")
-	public ResponseEntity<?> obtenerHorarioPorId(@PathVariable Long id) {
-
-		Map<String, Object> respuesta = new HashMap<>();
-
-		HorarioMedico horario = horarioMedicoService.obtenerHorarioMedicoPorId(id);
-
-		respuesta.put("data", horario);
-		respuesta.put("mensaje", "Horarios obtenidos correctamente");
-		return ResponseEntity.ok(respuesta);
-	}
-	
 	@GetMapping("/obtenerPacientes")
 	public ResponseEntity<?> obtenerPacientes() {
 

@@ -36,17 +36,7 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	@Qualifier("CitaRepository")
 	private CitaRepository citaRepository;
 
-	@Override
-	public List<HorarioMedico> obtenerHorarioMedico(Long medicoId) {
-		return horarioMedicoRepository.findByMedico_Id(medicoId);
-	}
-
-	@Override
-	public HorarioMedico obtenerHorarioMedicoPorId(Long id) {
-
-		return horarioMedicoRepository.findById(id).orElse(null);
-	}
-
+	
 	@Override
 	public List<HorarioMedico> obtenerHorariosPredefinidos(Long medicoId) {
 
@@ -99,4 +89,5 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 
 		return hoy;
 	}
+
 }
