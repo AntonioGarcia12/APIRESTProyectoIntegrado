@@ -1,5 +1,6 @@
 package com.example.demo.servicesImpl;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -38,30 +39,6 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	@Override
 	public List<HorarioMedico> obtenerHorarioMedico(Long medicoId) {
 		return horarioMedicoRepository.findByMedico_Id(medicoId);
-	}
-
-	@Override
-	public HorarioMedico editarHorario(Long id, HorarioMedico horarioMedico) {
-
-		HorarioMedico horarioExistente = horarioMedicoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada con id: " + id));
-
-		if (horarioMedico.getDia() != null)
-			horarioExistente.setDia(horarioMedico.getDia());
-
-		if (horarioMedico.getHoraInicio() != null)
-			horarioExistente.setHoraInicio(horarioMedico.getHoraInicio());
-
-		if (horarioMedico.getHoraFin() != null)
-			horarioExistente.setHoraFin(horarioMedico.getHoraFin());
-
-		return horarioMedicoRepository.save(horarioExistente);
-	}
-
-	@Override
-	public void eliminarHorario(Long id) {
-
-		horarioMedicoRepository.deleteById(id);
 	}
 
 	@Override
@@ -109,12 +86,17 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	}
 
 	private LocalDate diaValido() {
+		LocalDate hoy = LocalDate.now();
 		LocalTime ahora = LocalTime.now();
 		LocalTime finUltimaFranja = LocalTime.of(15, 0);
-		if (ahora.isAfter(finUltimaFranja) || ahora.equals(finUltimaFranja))
-			return LocalDate.now().plusDays(1);
-		else
-			return LocalDate.now();
 
+		if (ahora.isAfter(finUltimaFranja) || ahora.equals(finUltimaFranja))
+			hoy = hoy.plusDays(1);
+
+		while (hoy.getDayOfWeek() == DayOfWeek.SATURDAY || hoy.getDayOfWeek() == DayOfWeek.SUNDAY) {
+			hoy = hoy.plusDays(1);
+		}
+
+		return hoy;
 	}
 }

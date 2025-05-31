@@ -152,16 +152,6 @@ public class MedicoController {
         return ResponseEntity.ok(respuesta);
     }
 
-	@PutMapping("/editarHorario/{id}")
-	public ResponseEntity<?> editarHorario(@PathVariable Long id, @RequestBody HorarioMedico horarioMedico) {
-		Map<String, Object> respuesta = new HashMap<>();
-
-		HorarioMedico horarioActualizado = horarioMedicoService.editarHorario(id, horarioMedico);
-		respuesta.put("data", horarioActualizado);
-		respuesta.put("mensaje", "Horario actualizado correctamente");
-		return ResponseEntity.ok(respuesta);
-
-	}
 	
 	@PutMapping("/editarCita/{id}")
 	public ResponseEntity<?> editarCita(@RequestBody Cita cita, @PathVariable Long id,
@@ -307,16 +297,6 @@ public class MedicoController {
 
 		respuesta.put("data", disponibilidad);
 		respuesta.put("mensaje", "Horarios obtenidos correctamente");
-		return ResponseEntity.ok(respuesta);
-	}
-	
-	@DeleteMapping("/eliminarHorario/{id}")
-	public ResponseEntity<?> borrarHorario(@PathVariable Long id){
-		Map<String, Object> respuesta = new HashMap<>();
-		
-		horarioMedicoService.eliminarHorario(id);
-		respuesta.put("mensaje", "Horario eliminado correctamente");
-
 		return ResponseEntity.ok(respuesta);
 	}
 	
