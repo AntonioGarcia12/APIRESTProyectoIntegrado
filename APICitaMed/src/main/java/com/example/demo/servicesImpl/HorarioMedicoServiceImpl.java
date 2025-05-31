@@ -2,6 +2,7 @@ package com.example.demo.servicesImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -75,11 +76,12 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 		Medico medico = medicoRepository.findById(medicoId)
 				.orElseThrow(() -> new RuntimeException("Médico no encontrado con id: " + medicoId));
 
-		LocalDate hoy = LocalDate.now();
+		LocalDate dia = diaValido();
+
 		return HorarioSlots.SLOTS_FRIOS.stream().map(slot -> {
 			HorarioMedico h = new HorarioMedico();
 			h.setMedico(medico);
-			h.setDia(hoy);
+			h.setDia(dia);
 			h.setHoraInicio(slot.getInicio());
 			h.setHoraFin(slot.getFin());
 			return h;
@@ -88,10 +90,12 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 
 	@Override
 	public List<HorarioMedico> obtenerDisponibilidadParaPaciente(Long medicoId) {
+		LocalDate dia = diaValido();
+
 		List<HorarioMedico> todosLosHorarios = obtenerHorariosPredefinidos(medicoId);
-		LocalDate hoy = LocalDate.now();
-		LocalDateTime inicioDelDia = hoy.atStartOfDay();
-		LocalDateTime finDelDia = hoy.atTime(23, 59, 59);
+
+		LocalDateTime inicioDelDia = dia.atStartOfDay();
+		LocalDateTime finDelDia = dia.atTime(23, 59, 59);
 
 		List<Cita> citasDelDia = citaRepository.findByMedico_IdAndEstadoNotAndFechaBetween(medicoId, "CANCELADA",
 				inicioDelDia, finDelDia);
@@ -102,5 +106,15 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 			LocalDateTime inicioBloque = LocalDateTime.of(h.getDia(), h.getHoraInicio());
 			return !horasOcupadas.contains(inicioBloque);
 		}).collect(Collectors.toList());
+	}
+
+	private LocalDate diaValido() {
+		LocalTime ahora = LocalTime.now();
+		LocalTime finUltimaFranja = LocalTime.of(15, 0);
+		if (ahora.isAfter(finUltimaFranja) || ahora.equals(finUltimaFranja))
+			return LocalDate.now().plusDays(1);
+		else
+			return LocalDate.now();
+
 	}
 }
