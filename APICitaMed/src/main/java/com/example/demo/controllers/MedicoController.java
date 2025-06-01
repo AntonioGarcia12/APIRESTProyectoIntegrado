@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.AuthResponseDTO;
 import com.example.demo.entity.Cita;
 import com.example.demo.entity.HistorialMedico;
-import com.example.demo.entity.HorarioMedico;
 import com.example.demo.entity.Medico;
 import com.example.demo.entity.Usuario;
 import com.example.demo.services.CitaService;
@@ -285,11 +284,7 @@ public class MedicoController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
 		}
 
-		if (!pacienteAutenticado.getId().equals(idPaciente)) {
-			respuesta.put("mensaje", "No tiene permiso para ver el historial de otro paciente.");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
-		}
-
+	
 		List<HistorialMedico> historiales = historialMedicoService.buscarHistorialPorIdPaciente(idPaciente);
 
 		List<Cita> citas = citaService.obtenerCitasPorPacienteId(idPaciente);
