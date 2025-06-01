@@ -6,7 +6,7 @@ import com.example.demo.entity.HistorialMedico;
 
 public interface HistorialMedicoService {
 
-	HistorialMedico crearHistorialMedico(Long idMedico, Long idPaciente, String diagnostico, String tratamiento);
+	HistorialMedico crearHistorialMedico(Long idMedico, Long idPaciente, Long idCita, String diagnostico, String tratamiento);
 
 	List<HistorialMedico> buscarHistorialPorIdPaciente(Long idPaciente);
 	

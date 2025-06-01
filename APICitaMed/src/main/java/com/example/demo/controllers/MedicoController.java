@@ -63,7 +63,7 @@ public class MedicoController {
 		Map<String, Object> respuesta = new HashMap<>();
 
 		HistorialMedico historialMedico = historialMedicoService.crearHistorialMedico(historial.getMedico().getId(),
-				historial.getPaciente().getId(), historial.getDiagnostico(), historial.getTratamiento());
+				historial.getPaciente().getId(),historial.getCita().getId(), historial.getDiagnostico(), historial.getTratamiento());
 
 		respuesta.put("data", historialMedico);
 		respuesta.put("mensaje", "Historial médico creado correctamente");
@@ -83,28 +83,6 @@ public class MedicoController {
 
 		respuesta.put("data", historial);
 		respuesta.put("mensaje", "Historial encontrado");
-		return ResponseEntity.ok(respuesta);
-
-	}
-
-	@DeleteMapping("/borrarHistorialMedico/{id}")
-	public ResponseEntity<?> borrarHistorialMedico(@PathVariable Long id) {
-		Map<String, Object> respuesta = new HashMap<>();
-
-		historialMedicoService.borrarHistorialMedico(id);
-		respuesta.put("mensaje", "Historial eliminado correctamente");
-
-		return ResponseEntity.ok(respuesta);
-	}
-
-	@PutMapping("/editarHistorialMedico/{id}")
-	public ResponseEntity<?> editarHistorialMedico(@PathVariable Long id,
-			@RequestBody HistorialMedico historialMedico) {
-		Map<String, Object> respuesta = new HashMap<>();
-
-		HistorialMedico historialActualizado = historialMedicoService.editarHistorialMedico(id, historialMedico);
-		respuesta.put("data", historialActualizado);
-		respuesta.put("mensaje", "Horario actualizado correctamente");
 		return ResponseEntity.ok(respuesta);
 
 	}

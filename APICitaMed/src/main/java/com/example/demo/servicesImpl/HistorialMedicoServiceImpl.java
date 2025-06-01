@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entity.Cita;
 import com.example.demo.entity.HistorialMedico;
 import com.example.demo.entity.Medico;
 import com.example.demo.entity.Usuario;
@@ -35,7 +36,7 @@ public class HistorialMedicoServiceImpl implements HistorialMedicoService {
 	private UsuarioRepository usuarioRepository;
 
 	@Override
-	public HistorialMedico crearHistorialMedico(Long idMedico, Long idPaciente, String diagnostico,
+	public HistorialMedico crearHistorialMedico(Long idMedico, Long idPaciente, Long idCita, String diagnostico,
 			String tratamiento) {
 
 		Medico medico = medicoRepository.findById(idMedico)
@@ -44,9 +45,13 @@ public class HistorialMedicoServiceImpl implements HistorialMedicoService {
 		Usuario paciente = usuarioRepository.findById(idPaciente)
 				.orElseThrow(() -> new RuntimeException("Paciente no encontrado con id: " + idPaciente));
 
+		Cita cita = citaRepository.findById(idCita)
+				.orElseThrow(() -> new RuntimeException("Cita no encontrada: " + idCita));
+
 		HistorialMedico historial = new HistorialMedico();
 		historial.setMedico(medico);
 		historial.setPaciente(paciente);
+		historial.setCita(cita);
 		historial.setDiagnostico(diagnostico);
 		historial.setTratamiento(tratamiento);
 
@@ -61,35 +66,35 @@ public class HistorialMedicoServiceImpl implements HistorialMedicoService {
 
 	@Override
 	public List<HistorialMedico> listarHistorialesMedicos() {
-		
+
 		return historialMedicoRepository.findAll();
 	}
 
 	@Override
 	public void borrarHistorialMedico(Long id) {
-		
+
 		historialMedicoRepository.deleteById(id);
-		
+
 	}
 
 	@Override
 	public HistorialMedico editarHistorialMedico(Long id, HistorialMedico historialMedico) {
-		
-		HistorialMedico historialExistente = historialMedicoRepository.findById(id).orElseThrow(() -> new RuntimeException("Historial no encontrado con id: " + id));
-		
-		if(historialMedico.getDiagnostico() != null)
+
+		HistorialMedico historialExistente = historialMedicoRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Historial no encontrado con id: " + id));
+
+		if (historialMedico.getDiagnostico() != null)
 			historialExistente.setDiagnostico(historialMedico.getDiagnostico());
-		
-		if(historialMedico.getTratamiento() != null)
+
+		if (historialMedico.getTratamiento() != null)
 			historialExistente.setTratamiento(historialMedico.getTratamiento());
-		
-		
+
 		return historialMedicoRepository.save(historialExistente);
 	}
-	
+
 	@Override
-	 public HistorialMedico obtenerHistorialPorCitaId(Long citaId) {
-        return historialMedicoRepository.findByCitaId(citaId);
-    }
+	public HistorialMedico obtenerHistorialPorCitaId(Long citaId) {
+		return historialMedicoRepository.findByCitaId(citaId);
+	}
 
 }
