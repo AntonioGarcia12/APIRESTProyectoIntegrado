@@ -272,14 +272,15 @@ public class MedicoController {
 			String trat = (h != null) ? h.getTratamiento() : null;
 
 			return new CitaConHistorialDTO(c.getId(), c.getFecha(), c.getEstado(), c.getMedico().getId(),
-					c.getCentroDeSalud().getId(), diag, trat);
+					c.getMedico().getNombre() + " " + c.getMedico().getApellidos(), c.getCentroDeSalud().getId(),
+					c.getCentroDeSalud().getNombre(), diag, trat);
 		}).toList();
 
 		respuesta.put("data", listaDto);
 		respuesta.put("mensaje", "Citas con su historial médico obtenidas correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
-	
+
 	@GetMapping("/listarUnPaciente/{id}")
 	public ResponseEntity<?> listarUnPaciente(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
 		Map<String, Object> respuesta = new HashMap<>();
