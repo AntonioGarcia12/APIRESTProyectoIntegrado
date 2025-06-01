@@ -214,4 +214,9 @@ public class CitaServiceImpl implements CitaService {
 		return citaRepository.findByPacienteAndFechaGreaterThanEqual(paciente, ahora);
 	}
 
+	@Override
+	public List<Cita> obtenerCitasPorPacienteId(Long idPaciente) {
+	    return citaRepository.findByPacienteId(idPaciente);
+	}
+
 }

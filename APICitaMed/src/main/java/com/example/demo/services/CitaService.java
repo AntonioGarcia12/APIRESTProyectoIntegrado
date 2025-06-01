@@ -28,5 +28,7 @@ public interface CitaService {
 	List<Cita> obtenerCitasPorMedico(Long idMedico);
 	
 	List<Cita> obtenerCitasActualesDePaciente(Usuario paciente);
+	
+	List<Cita> obtenerCitasPorPacienteId(Long idPaciente);
 
 }

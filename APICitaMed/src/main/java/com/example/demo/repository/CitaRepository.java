@@ -41,6 +41,8 @@ public interface CitaRepository extends JpaRepository<Cita, Serializable> {
 		);
 	
 	 List<Cita> findByPacienteAndFechaGreaterThanEqual(Usuario paciente, LocalDateTime fechaDesde);
+	 
+	 List<Cita> findByPacienteId(Long idPaciente);
 
 
 }
