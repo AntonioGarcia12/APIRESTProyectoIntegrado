@@ -58,10 +58,7 @@ public class PacienteController {
 	@Qualifier("HorarioMedicoService")
 	private HorarioMedicoService horarioMedicoService;
 
-	@Autowired
-	@Qualifier("HistorialMedicoService")
-	private HistorialMedicoService historialMedicoService;
-
+	
 	@PutMapping("/editarPaciente/{id}")
 	public ResponseEntity<?> editarPaciente(Usuario usuario, MultipartFile archivo, @PathVariable Long id,
 			@AuthenticationPrincipal UserDetails userDetails) {
@@ -336,36 +333,6 @@ public class PacienteController {
 		return ResponseEntity.ok(respuesta);
 	}
 
-	@GetMapping("/historialCompleto/{idPaciente}")
-	public ResponseEntity<?> obtenerHistorialCompleto(@PathVariable Long idPaciente,
-			@AuthenticationPrincipal UserDetails userDetails) {
-
-		Map<String, Object> respuesta = new HashMap<>();
-
-		if (userDetails == null) {
-			respuesta.put("mensaje", "No hay usuario autenticado o token inválido.");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
-		}
-
-		Usuario pacienteAutenticado = usuarioService.buscarPorEmail(userDetails.getUsername());
-		if (pacienteAutenticado == null) {
-			respuesta.put("mensaje", "Paciente no encontrado en la base de datos.");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
-		}
-
-		if (!pacienteAutenticado.getId().equals(idPaciente)) {
-			respuesta.put("mensaje", "No tiene permiso para ver el historial de otro paciente.");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(respuesta);
-		}
-
-		List<HistorialMedico> historiales = historialMedicoService.buscarHistorialPorIdPaciente(idPaciente);
-
-		List<Cita> citas = citaService.obtenerCitasPorPacienteId(idPaciente);
-
-		respuesta.put("historial", historiales);
-		respuesta.put("citas", citas);
-		respuesta.put("mensaje", "Historial médico y citas obtenidos correctamente");
-		return ResponseEntity.ok(respuesta);
-	}
+	
 
 }
