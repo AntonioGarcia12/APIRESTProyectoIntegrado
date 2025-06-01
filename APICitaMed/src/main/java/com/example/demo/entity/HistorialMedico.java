@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class HistorialMedico {
@@ -23,6 +24,10 @@ public class HistorialMedico {
 	@JoinColumn(name = "id_paciente", nullable = false)
 	private Usuario paciente;
 
+	@OneToOne
+	@JoinColumn(name = "id_cita", nullable = false, unique = true)
+	private Cita cita;
+
 	@Column(length = 500)
 	private String diagnostico;
 
@@ -38,6 +43,17 @@ public class HistorialMedico {
 		this.id = id;
 		this.medico = medico;
 		this.paciente = paciente;
+		this.diagnostico = diagnostico;
+		this.tratamiento = tratamiento;
+	}
+
+	public HistorialMedico(Long id, Medico medico, Usuario paciente, Cita cita, String diagnostico,
+			String tratamiento) {
+		super();
+		this.id = id;
+		this.medico = medico;
+		this.paciente = paciente;
+		this.cita = cita;
 		this.diagnostico = diagnostico;
 		this.tratamiento = tratamiento;
 	}
@@ -81,4 +97,13 @@ public class HistorialMedico {
 	public void setTratamiento(String tratamiento) {
 		this.tratamiento = tratamiento;
 	}
+
+	public Cita getCita() {
+		return cita;
+	}
+
+	public void setCita(Cita cita) {
+		this.cita = cita;
+	}
+
 }

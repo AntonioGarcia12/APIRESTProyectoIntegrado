@@ -16,4 +16,6 @@ public interface HistorialMedicoService {
 	
 	HistorialMedico editarHistorialMedico(Long id,HistorialMedico historialMedico);
 	
+	HistorialMedico obtenerHistorialPorCitaId(Long citaId);
+	
 }

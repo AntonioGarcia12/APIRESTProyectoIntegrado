@@ -12,5 +12,7 @@ import com.example.demo.entity.HistorialMedico;
 public interface HistorialMedicoRepository extends JpaRepository<HistorialMedico, Serializable> {
 
 	List<HistorialMedico> findByPaciente_Id(Long idPaciente);
+	
+	HistorialMedico findByCitaId(Long citaId);
 
 }

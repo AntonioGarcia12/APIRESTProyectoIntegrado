@@ -1,6 +1,6 @@
 package com.example.demo.controllers;
 
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.AuthResponseDTO;
+import com.example.demo.dto.CitaConHistorialDTO;
 import com.example.demo.entity.Cita;
 import com.example.demo.entity.HistorialMedico;
 import com.example.demo.entity.Medico;
@@ -266,9 +267,9 @@ public class MedicoController {
 		respuesta.put("mensaje", "Pacientes obtenidos correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
-	
-	@GetMapping("/historialCompleto/{idPaciente}")
-	public ResponseEntity<?> obtenerHistorialCompleto(@PathVariable Long idPaciente,
+
+	@GetMapping("/citasConHistorial/{idPaciente}")
+	public ResponseEntity<?> obtenerCitasConHistorial(@PathVariable Long idPaciente,
 			@AuthenticationPrincipal UserDetails userDetails) {
 
 		Map<String, Object> respuesta = new HashMap<>();
@@ -284,14 +285,20 @@ public class MedicoController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
 		}
 
-	
-		List<HistorialMedico> historiales = historialMedicoService.buscarHistorialPorIdPaciente(idPaciente);
-
 		List<Cita> citas = citaService.obtenerCitasPorPacienteId(idPaciente);
 
-		respuesta.put("historial", historiales);
-		respuesta.put("citas", citas);
-		respuesta.put("mensaje", "Historial médico y citas obtenidos correctamente");
+		List<CitaConHistorialDTO> listaDto = citas.stream().map(c -> {
+			HistorialMedico h = historialMedicoService.obtenerHistorialPorCitaId(c.getId());
+			String diag = (h != null) ? h.getDiagnostico() : null;
+			String trat = (h != null) ? h.getTratamiento() : null;
+
+			return new CitaConHistorialDTO(c.getId(), c.getFecha(), c.getEstado(), c.getMedico().getId(),
+					c.getMedico().getNombre() + " " + c.getMedico().getApellidos(), c.getCentroDeSalud().getId(),
+					c.getCentroDeSalud().getNombre(), diag, trat);
+		}).toList();
+
+		respuesta.put("data", listaDto);
+		respuesta.put("mensaje", "Citas con su historial médico obtenidas correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
 

@@ -86,5 +86,10 @@ public class HistorialMedicoServiceImpl implements HistorialMedicoService {
 		
 		return historialMedicoRepository.save(historialExistente);
 	}
+	
+	@Override
+	 public HistorialMedico obtenerHistorialPorCitaId(Long citaId) {
+        return historialMedicoRepository.findByCitaId(citaId);
+    }
 
 }
