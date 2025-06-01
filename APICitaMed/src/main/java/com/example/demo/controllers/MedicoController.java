@@ -63,7 +63,8 @@ public class MedicoController {
 		Map<String, Object> respuesta = new HashMap<>();
 
 		HistorialMedico historialMedico = historialMedicoService.crearHistorialMedico(historial.getMedico().getId(),
-				historial.getPaciente().getId(),historial.getCita().getId(), historial.getDiagnostico(), historial.getTratamiento());
+				historial.getPaciente().getId(), historial.getCita().getId(), historial.getDiagnostico(),
+				historial.getTratamiento());
 
 		respuesta.put("data", historialMedico);
 		respuesta.put("mensaje", "Historial médico creado correctamente");
@@ -271,8 +272,7 @@ public class MedicoController {
 			String trat = (h != null) ? h.getTratamiento() : null;
 
 			return new CitaConHistorialDTO(c.getId(), c.getFecha(), c.getEstado(), c.getMedico().getId(),
-					c.getMedico().getNombre() + " " + c.getMedico().getApellidos(), c.getCentroDeSalud().getId(),
-					c.getCentroDeSalud().getNombre(), diag, trat);
+					c.getCentroDeSalud().getId(), diag, trat);
 		}).toList();
 
 		respuesta.put("data", listaDto);

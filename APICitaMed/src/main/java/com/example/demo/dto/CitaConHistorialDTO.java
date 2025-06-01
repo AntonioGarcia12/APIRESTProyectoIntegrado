@@ -7,9 +7,7 @@ public class CitaConHistorialDTO {
 	private LocalDateTime fecha;
 	private String estado;
 	private Long medicoId;
-	private String medicoNombre;
 	private Long centroId;
-	private String centroNombre;
 	private String diagnostico;
 	private String tratamiento;
 	
@@ -17,15 +15,13 @@ public class CitaConHistorialDTO {
 		super();
 	}
 
-	public CitaConHistorialDTO(Long citaId, LocalDateTime fecha, String estado, Long medicoId, String medicoNombre,
-			Long centroId, String centroNombre, String diagnostico, String tratamiento) {
+	public CitaConHistorialDTO(Long citaId, LocalDateTime fecha, String estado, Long medicoId,
+			Long centroId, String diagnostico, String tratamiento) {
 		this.citaId = citaId;
 		this.fecha = fecha;
 		this.estado = estado;
 		this.medicoId = medicoId;
-		this.medicoNombre = medicoNombre;
 		this.centroId = centroId;
-		this.centroNombre = centroNombre;
 		this.diagnostico = diagnostico;
 		this.tratamiento = tratamiento;
 	}
@@ -62,14 +58,7 @@ public class CitaConHistorialDTO {
 		this.medicoId = medicoId;
 	}
 
-	public String getMedicoNombre() {
-		return medicoNombre;
-	}
-
-	public void setMedicoNombre(String medicoNombre) {
-		this.medicoNombre = medicoNombre;
-	}
-
+	
 	public Long getCentroId() {
 		return centroId;
 	}
@@ -78,13 +67,7 @@ public class CitaConHistorialDTO {
 		this.centroId = centroId;
 	}
 
-	public String getCentroNombre() {
-		return centroNombre;
-	}
-
-	public void setCentroNombre(String centroNombre) {
-		this.centroNombre = centroNombre;
-	}
+	
 
 	public String getDiagnostico() {
 		return diagnostico;
