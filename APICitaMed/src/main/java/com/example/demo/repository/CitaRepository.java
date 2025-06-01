@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Cita;
+import com.example.demo.entity.Usuario;
 
 @Repository("CitaRepository")
 public interface CitaRepository extends JpaRepository<Cita, Serializable> {
@@ -38,6 +39,8 @@ public interface CitaRepository extends JpaRepository<Cita, Serializable> {
 		    LocalDateTime inicio,
 		    LocalDateTime fin
 		);
+	
+	 List<Cita> findByPacienteAndFechaGreaterThanEqual(Usuario paciente, LocalDateTime fechaDesde);
 
 
 }

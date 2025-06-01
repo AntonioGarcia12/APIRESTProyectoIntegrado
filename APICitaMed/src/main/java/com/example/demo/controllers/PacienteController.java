@@ -220,8 +220,6 @@ public class PacienteController {
 		return ResponseEntity.ok(respuesta);
 	}
 
-	
-
 	@PutMapping("/cancelarCita/{id}")
 	public ResponseEntity<?> cancelarCita(@PathVariable Long id, @RequestParam Long idPaciente,
 			@AuthenticationPrincipal UserDetails userDetails) {
@@ -298,10 +296,37 @@ public class PacienteController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
 		}
 
-		
-
 		respuesta.put("data", medico);
 		respuesta.put("mensaje", "Médico obtenido correctamente");
+		return ResponseEntity.ok(respuesta);
+	}
+
+	@GetMapping("/citasActuales")
+	public ResponseEntity<?> obtenerCitasActuales(@AuthenticationPrincipal UserDetails userDetails) {
+
+		Map<String, Object> respuesta = new HashMap<>();
+
+		if (userDetails == null) {
+			respuesta.put("mensaje", "No hay usuario autenticado o token inválido.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
+
+		Usuario pacienteAutenticado = usuarioService.buscarPorEmail(userDetails.getUsername());
+		if (pacienteAutenticado == null) {
+			respuesta.put("mensaje", "Paciente no encontrado en la base de datos.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+		}
+
+		List<Cita> citasActuales = citaService.obtenerCitasActualesDePaciente(pacienteAutenticado);
+
+		if (citasActuales.isEmpty()) {
+			respuesta.put("data", List.of());
+			respuesta.put("mensaje", "No tienes citas actuales");
+			return ResponseEntity.ok(respuesta);
+		}
+
+		respuesta.put("data", citasActuales);
+		respuesta.put("mensaje", "Citas actuales obtenidas correctamente");
 		return ResponseEntity.ok(respuesta);
 	}
 

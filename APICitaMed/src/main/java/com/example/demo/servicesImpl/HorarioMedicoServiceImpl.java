@@ -57,23 +57,47 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 	}
 
 	@Override
-	public List<HorarioMedico> obtenerDisponibilidadParaPaciente(Long medicoId) {
-		LocalDate dia = diaValido();
+	public List<HorarioMedico> obtenerDisponibilidadMensual(Long medicoId) {
 
-		List<HorarioMedico> todosLosHorarios = obtenerHorariosPredefinidos(medicoId);
+		Medico medico = medicoRepository.findById(medicoId)
+				.orElseThrow(() -> new RuntimeException("Médico no encontrado con id: " + medicoId));
 
-		LocalDateTime inicioDelDia = dia.atStartOfDay();
-		LocalDateTime finDelDia = dia.atTime(23, 59, 59);
+		List<HorarioMedico> disponiblesMes = new ArrayList<>();
 
-		List<Cita> citasDelDia = citaRepository.findByMedico_IdAndEstadoNotAndFechaBetween(medicoId, "CANCELADA",
-				inicioDelDia, finDelDia);
+		YearMonth mesActual = YearMonth.now();
 
-		Set<LocalDateTime> horasOcupadas = citasDelDia.stream().map(Cita::getFecha).collect(Collectors.toSet());
+		for (int diaDelMes = 1; diaDelMes <= mesActual.lengthOfMonth(); diaDelMes++) {
+			LocalDate fecha = mesActual.atDay(diaDelMes);
 
-		return todosLosHorarios.stream().filter(h -> {
-			LocalDateTime inicioBloque = LocalDateTime.of(h.getDia(), h.getHoraInicio());
-			return !horasOcupadas.contains(inicioBloque);
-		}).collect(Collectors.toList());
+			DayOfWeek dow = fecha.getDayOfWeek();
+			if (dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY)
+				continue;
+
+			List<HorarioMedico> franjasDelDia = HorarioSlots.SLOTS_FRIOS.stream().map(slot -> {
+				HorarioMedico h = new HorarioMedico();
+				h.setMedico(medico);
+				h.setDia(fecha);
+				h.setHoraInicio(slot.getInicio());
+				h.setHoraFin(slot.getFin());
+				return h;
+			}).collect(Collectors.toList());
+
+			LocalDateTime inicioDelDia = fecha.atStartOfDay();
+			LocalDateTime finDelDia = fecha.atTime(23, 59, 59);
+			List<Cita> citasDelDia = citaRepository.findByMedico_IdAndEstadoNotAndFechaBetween(medicoId, "CANCELADA",
+					inicioDelDia, finDelDia);
+
+			Set<LocalDateTime> horasOcupadas = citasDelDia.stream().map(Cita::getFecha).collect(Collectors.toSet());
+
+			List<HorarioMedico> disponiblesDelDia = franjasDelDia.stream().filter(h -> {
+				LocalDateTime inicioBloque = LocalDateTime.of(h.getDia(), h.getHoraInicio());
+				return !horasOcupadas.contains(inicioBloque);
+			}).collect(Collectors.toList());
+
+			disponiblesMes.addAll(disponiblesDelDia);
+		}
+
+		return disponiblesMes;
 	}
 
 	private LocalDate diaValido() {
@@ -90,69 +114,5 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 
 		return hoy;
 	}
-
-	@Override
-    public List<HorarioMedico> obtenerDisponibilidadMensual(Long medicoId) {
-       
-        Medico medico = medicoRepository.findById(medicoId)
-            .orElseThrow(() -> new RuntimeException("Médico no encontrado con id: " + medicoId));
-
-        List<HorarioMedico> disponiblesMes = new ArrayList<>();
-
-       
-        YearMonth mesActual = YearMonth.now();
-        
-
-        
-        for (int diaDelMes = 1; diaDelMes <= mesActual.lengthOfMonth(); diaDelMes++) {
-            LocalDate fecha = mesActual.atDay(diaDelMes);
-
-            
-            DayOfWeek dow = fecha.getDayOfWeek();
-            if (dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY) {
-                continue;
-            }
-
-            
-            List<HorarioMedico> franjasDelDia = HorarioSlots.SLOTS_FRIOS.stream()
-                .map(slot -> {
-                    HorarioMedico h = new HorarioMedico();
-                    h.setMedico(medico);
-                    h.setDia(fecha);
-                    h.setHoraInicio(slot.getInicio());
-                    h.setHoraFin(slot.getFin());
-                    return h;
-                })
-                .collect(Collectors.toList());
-
-            
-            LocalDateTime inicioDelDia = fecha.atStartOfDay();
-            LocalDateTime finDelDia = fecha.atTime(23, 59, 59);
-            List<Cita> citasDelDia = citaRepository.findByMedico_IdAndEstadoNotAndFechaBetween(
-                medicoId,
-                "CANCELADA",
-                inicioDelDia,
-                finDelDia
-            );
-
-            
-            Set<LocalDateTime> horasOcupadas = citasDelDia.stream()
-                .map(Cita::getFecha)
-                .collect(Collectors.toSet());
-
-           
-            List<HorarioMedico> disponiblesDelDia = franjasDelDia.stream()
-                .filter(h -> {
-                    LocalDateTime inicioBloque = LocalDateTime.of(h.getDia(), h.getHoraInicio());
-                    return !horasOcupadas.contains(inicioBloque);
-                })
-                .collect(Collectors.toList());
-
-            
-            disponiblesMes.addAll(disponiblesDelDia);
-        }
-
-        return disponiblesMes;
-    }
 
 }

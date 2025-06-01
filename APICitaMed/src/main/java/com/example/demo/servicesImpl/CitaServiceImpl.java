@@ -208,4 +208,10 @@ public class CitaServiceImpl implements CitaService {
 		return citaRepository.findByMedico_Id(idMedico);
 	}
 
+	@Override
+	public List<Cita> obtenerCitasActualesDePaciente(Usuario paciente) {
+		LocalDateTime ahora = LocalDateTime.now();
+		return citaRepository.findByPacienteAndFechaGreaterThanEqual(paciente, ahora);
+	}
+
 }

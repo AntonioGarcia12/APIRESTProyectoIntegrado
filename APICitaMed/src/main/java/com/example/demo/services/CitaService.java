@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.example.demo.dto.CitaDTO;
 import com.example.demo.entity.Cita;
+import com.example.demo.entity.Usuario;
 
 public interface CitaService {
 
@@ -25,5 +26,7 @@ public interface CitaService {
 	void actualizarCitaPorMedico(Long idCita, String estado);
 
 	List<Cita> obtenerCitasPorMedico(Long idMedico);
+	
+	List<Cita> obtenerCitasActualesDePaciente(Usuario paciente);
 
 }
