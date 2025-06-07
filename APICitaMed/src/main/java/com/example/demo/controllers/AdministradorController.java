@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -89,7 +90,7 @@ public class AdministradorController {
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Registro exitoso");
 
-		return ResponseEntity.ok(respuesta);
+		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 	}
 
 	@DeleteMapping("/borrarMedico/{id}")
@@ -176,7 +177,7 @@ public class AdministradorController {
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Registro exitoso");
 
-		return ResponseEntity.ok(respuesta);
+		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 
 	}
 

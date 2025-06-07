@@ -23,13 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.dto.AuthResponseDTO;
 import com.example.demo.dto.CitaDTO;
 import com.example.demo.entity.Cita;
-import com.example.demo.entity.HistorialMedico;
 import com.example.demo.entity.HorarioMedico;
 import com.example.demo.entity.Medico;
 import com.example.demo.entity.Usuario;
 import com.example.demo.services.CitaService;
 import com.example.demo.services.FileUploadService;
-import com.example.demo.services.HistorialMedicoService;
 import com.example.demo.services.HorarioMedicoService;
 import com.example.demo.services.MedicoService;
 import com.example.demo.services.UsuarioService;
@@ -187,7 +185,7 @@ public class PacienteController {
 
 		respuesta.put("data", cita);
 		respuesta.put("mensaje", "Cita creada correctamente");
-		return ResponseEntity.ok(respuesta);
+		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 	}
 
 	@GetMapping("/historialCitas/{id}")

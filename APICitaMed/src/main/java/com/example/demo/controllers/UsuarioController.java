@@ -128,7 +128,7 @@ public class UsuarioController {
 		respuesta.put("data", response);
 		respuesta.put("mensaje", "Registro exitoso");
 
-		return ResponseEntity.ok(respuesta);
+		return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
 	}
 	
 	@GetMapping("/listaCentros")
