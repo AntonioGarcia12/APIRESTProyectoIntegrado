@@ -21,7 +21,7 @@ import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.HorarioMedicoRepository;
 import com.example.demo.repository.MedicoRepository;
 import com.example.demo.services.HorarioMedicoService;
-import com.example.demo.util.HorarioSlots;
+import com.example.demo.util.Horario;
 
 @Service("HorarioMedicoService")
 public class HorarioMedicoServiceImpl implements HorarioMedicoService {
@@ -46,7 +46,7 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 
 		LocalDate dia = diaValido();
 
-		return HorarioSlots.SLOTS_FRIOS.stream().map(slot -> {
+		return Horario.HORAS.stream().map(slot -> {
 			HorarioMedico h = new HorarioMedico();
 			h.setMedico(medico);
 			h.setDia(dia);
@@ -73,7 +73,7 @@ public class HorarioMedicoServiceImpl implements HorarioMedicoService {
 			if (dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY)
 				continue;
 
-			List<HorarioMedico> franjasDelDia = HorarioSlots.SLOTS_FRIOS.stream().map(slot -> {
+			List<HorarioMedico> franjasDelDia = Horario.HORAS.stream().map(slot -> {
 				HorarioMedico h = new HorarioMedico();
 				h.setMedico(medico);
 				h.setDia(fecha);
